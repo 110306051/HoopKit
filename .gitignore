@@ -1,0 +1,52 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build output
+dist/
+build/
+coverage/
+.turbo/
+.next/
+out/
+web-build/
+
+# Expo / React Native
+.expo/
+.expo-shared/
+apps/mobile/android/
+apps/mobile/ios/
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# Supabase local runtime
+supabase/.branches/
+supabase/.temp/
+
+# Editors / OS
+.idea/
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.json
+.DS_Store
+Thumbs.db
+*.swp
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# TypeScript
+*.tsbuildinfo

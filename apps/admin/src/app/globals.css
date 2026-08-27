@@ -1,0 +1,66 @@
+@import "tailwindcss";
+
+:root {
+  --ink: #111711;
+  --muted: #667065;
+  --paper: #f2f0e9;
+  --panel: #fbfaf6;
+  --line: #d8d6cd;
+  --lime: #bff54a;
+  --lime-deep: #8cc61b;
+  --orange: #ff6b35;
+  --court: #c96f36;
+  --font-manrope: "Arial Black", "Arial Narrow", Arial, sans-serif;
+  --font-noto-sans-tc: "Microsoft JhengHei", "PingFang TC", "Noto Sans TC", sans-serif;
+}
+
+@theme inline {
+  --color-background: var(--paper);
+  --color-foreground: var(--ink);
+  --font-sans: var(--font-noto-sans-tc), var(--font-manrope), sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--paper);
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(circle at 16% 8%, rgb(191 245 74 / 14%), transparent 26rem),
+    var(--paper);
+  color: var(--ink);
+  font-family: var(--font-noto-sans-tc), var(--font-manrope), sans-serif;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+::selection {
+  background: var(--lime);
+  color: var(--ink);
+}
+
+.court-grid {
+  background-image:
+    linear-gradient(rgb(17 23 17 / 5%) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(17 23 17 / 5%) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+@layer components {
+  .field-input {
+    @apply min-h-12 w-full rounded-xl border border-[#cbc9bf] bg-white px-4 text-[15px] text-[#111711] outline-none transition placeholder:text-[#a1a69f] focus:border-[#7da51c] focus:ring-4 focus:ring-[#bff54a]/20;
+  }
+}
