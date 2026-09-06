@@ -13,7 +13,7 @@ export function MediaPreview({
   if (!asset) {
     return (
       <div
-        className={`court-grid grid place-items-center rounded-xl border border-dashed border-[#c9c7be] bg-[#eceae2] text-center text-xs font-semibold text-[#858b82] ${
+        className={`grid place-items-center border border-dashed border-[#a8a8a0] bg-[#eeeeea] text-center text-xs font-semibold text-[#85857f] ${
           compact ? "h-32" : "aspect-video"
         }`}
       >
@@ -25,7 +25,7 @@ export function MediaPreview({
   const isImage = asset.kind === "image";
 
   return (
-    <div className="overflow-hidden rounded-xl border border-[#d8d6cd] bg-[#111711]">
+    <div className="overflow-hidden border border-[#27282d] bg-[#101114]">
       {isImage && asset.sourceUrl ? (
         <img
           src={asset.sourceUrl}
@@ -66,7 +66,7 @@ export function MediaPreview({
         </div>
       )}
 
-      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 bg-[#171d17] px-3 py-2 text-[10px] text-white/55">
+      <div className="utility-type flex flex-wrap items-center gap-x-3 gap-y-1 border-t border-white/10 bg-[#101114] px-3 py-2 text-[9px] font-bold tracking-[0.05em] text-white/55">
         <span>{asset.provider.toUpperCase()}</span>
         <span>{asset.status}</span>
         <span>{formatDuration(asset.durationMs)}</span>

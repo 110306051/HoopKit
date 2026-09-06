@@ -8,6 +8,8 @@ import {
   ErrorState,
   LoadingState,
 } from "@/components/content-state";
+import { CourtIndex } from "@/components/playbook-ui";
+import { Fonts, Playbook } from "@/constants/theme";
 import { useApiResource } from "@/hooks/use-api-resource";
 import { getWorkouts } from "@/lib/content-api";
 
@@ -19,11 +21,11 @@ export default function WorkoutsScreen() {
       <SafeAreaView edges={["bottom"]} style={styles.safe}>
         <ScrollView contentContainerStyle={styles.content}>
           <View style={styles.intro}>
-            <Text style={styles.kicker}>TRAINING TEMPLATES</Text>
-            <Text style={styles.title}>公開訓練菜單</Text>
-            <Text style={styles.body}>
-              先參考球員與教練的訓練架構；登入後可建立個人副本，再自由調整內容與順序。
-            </Text>
+            <CourtIndex
+              eyebrow="WORKOUT PLAYBOOKS"
+              title="公開訓練菜單"
+              description="參考球員與教練的訓練架構；登入後建立個人副本，再自由調整內容與順序。"
+            />
           </View>
           {loading ? (
             <LoadingState />
@@ -93,7 +95,7 @@ function difficultyLabel(value: string) {
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: "#ffffff" },
+  screen: { flex: 1, backgroundColor: Playbook.canvas },
   safe: { flex: 1 },
   content: {
     width: "100%",
@@ -102,33 +104,24 @@ const styles = StyleSheet.create({
     padding: 20,
     paddingBottom: 50,
   },
-  intro: { paddingVertical: 12, gap: 9 },
-  kicker: {
-    color: "#777777",
-    fontSize: 10,
-    fontWeight: "900",
-    letterSpacing: 1.5,
-  },
-  title: { color: "#111111", fontSize: 33, fontWeight: "900" },
-  body: { color: "#555555", fontSize: 15, lineHeight: 23 },
+  intro: { paddingVertical: 12 },
   list: { marginTop: 22, gap: 16 },
   card: {
     overflow: "hidden",
-    borderRadius: 18,
     borderWidth: 1,
-    borderColor: "#dddddd",
-    backgroundColor: "#ffffff",
+    borderColor: Playbook.line,
+    backgroundColor: Playbook.paper,
   },
   cover: { width: "100%", aspectRatio: 16 / 8 },
   fallback: {
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#eeeeee",
+    backgroundColor: Playbook.surface,
   },
-  mark: { color: "#111111", fontSize: 25, fontWeight: "900", letterSpacing: 3 },
+  mark: { color: Playbook.orange, fontFamily: Fonts.display, fontSize: 25, fontWeight: "900", letterSpacing: 3 },
   cardBody: { padding: 18, gap: 8 },
-  meta: { color: "#555555", fontSize: 11, fontWeight: "900" },
-  cardTitle: { color: "#111111", fontSize: 21, fontWeight: "900" },
-  description: { color: "#555555", fontSize: 14, lineHeight: 21 },
-  source: { color: "#222222", fontSize: 12, fontWeight: "700" },
+  meta: { color: Playbook.orange, fontFamily: Fonts.mono, fontSize: 10, fontWeight: "900" },
+  cardTitle: { color: Playbook.ink, fontFamily: Fonts.display, fontSize: 25, fontWeight: "900" },
+  description: { color: Playbook.muted, fontSize: 14, lineHeight: 21 },
+  source: { color: Playbook.inkSoft, fontSize: 12, fontWeight: "700" },
 });

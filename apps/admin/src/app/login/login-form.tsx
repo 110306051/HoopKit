@@ -36,7 +36,7 @@ export function LoginForm() {
     <form className="mt-10 space-y-5" onSubmit={handleSubmit}>
       <div>
         <label
-          className="mb-2 block text-sm font-semibold text-[#30392f]"
+          className="mb-2 block text-sm font-bold text-[#30302d]"
           htmlFor="email"
         >
           工作 Email
@@ -50,14 +50,14 @@ export function LoginForm() {
           value={email}
           onChange={(event) => setEmail(event.target.value)}
           placeholder="coach@hoopkit.local"
-          className="h-13 w-full rounded-xl border border-[#cbc9bf] bg-white px-4 text-[15px] outline-none transition focus:border-[#7da51c] focus:ring-4 focus:ring-[#bff54a]/20"
+          className="field-input"
         />
       </div>
 
       <div>
         <div className="mb-2 flex items-center justify-between">
           <label
-            className="block text-sm font-semibold text-[#30392f]"
+            className="block text-sm font-bold text-[#30302d]"
             htmlFor="password"
           >
             密碼
@@ -74,7 +74,7 @@ export function LoginForm() {
           value={password}
           onChange={(event) => setPassword(event.target.value)}
           placeholder="輸入管理帳號密碼"
-          className="h-13 w-full rounded-xl border border-[#cbc9bf] bg-white px-4 text-[15px] outline-none transition focus:border-[#7da51c] focus:ring-4 focus:ring-[#bff54a]/20"
+          className="field-input"
         />
       </div>
 
@@ -90,7 +90,7 @@ export function LoginForm() {
       <button
         type="submit"
         disabled={isSubmitting}
-        className="flex h-13 w-full items-center justify-center rounded-xl bg-[#111711] px-5 font-bold text-white transition hover:bg-[#263025] focus:outline-none focus:ring-4 focus:ring-[#bff54a]/45 disabled:cursor-wait disabled:opacity-60"
+        className="primary-action w-full disabled:cursor-wait disabled:opacity-60"
       >
         {isSubmitting ? "正在驗證…" : "進入 HoopKit Studio"}
       </button>

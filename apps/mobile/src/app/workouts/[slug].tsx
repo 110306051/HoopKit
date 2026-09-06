@@ -18,6 +18,8 @@ import {
   unfavoriteWorkout,
 } from "@/lib/member-api";
 import { useSession } from "@/providers/session-provider";
+import { ReportContentButton } from "@/components/report-content-button";
+import { Fonts, Playbook } from "@/constants/theme";
 
 export default function WorkoutDetailScreen() {
   const { slug } = useLocalSearchParams<{ slug: string }>();
@@ -199,6 +201,10 @@ export default function WorkoutDetailScreen() {
             </View>
           ))}
         </View>
+        <ReportContentButton
+          targetType="workout_template"
+          targetId={workout.id}
+        />
       </ScrollView>
     </Screen>
   );
@@ -235,7 +241,7 @@ function formatVolume(item: {
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: "#ffffff" },
+  screen: { flex: 1, backgroundColor: Playbook.canvas },
   safe: { flex: 1 },
   content: {
     width: "100%",
@@ -247,58 +253,100 @@ const styles = StyleSheet.create({
   fallback: {
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#eeeeee",
+    backgroundColor: Playbook.surface,
   },
-  mark: { color: "#111111", fontSize: 24, fontWeight: "900", letterSpacing: 3 },
-  heading: { padding: 22, gap: 10 },
-  meta: { color: "#666666", fontSize: 11, fontWeight: "900" },
-  title: { color: "#111111", fontSize: 34, lineHeight: 40, fontWeight: "900" },
-  description: { color: "#555555", fontSize: 15, lineHeight: 23 },
-  source: { color: "#222222", fontWeight: "700", fontSize: 13 },
+  mark: {
+    color: Playbook.orange,
+    fontFamily: Fonts.display,
+    fontSize: 24,
+    fontWeight: "900",
+    letterSpacing: 3,
+  },
+  heading: {
+    padding: 22,
+    gap: 10,
+    backgroundColor: Playbook.paper,
+    borderBottomWidth: 1,
+    borderBottomColor: Playbook.line,
+  },
+  meta: {
+    color: Playbook.orange,
+    fontFamily: Fonts.mono,
+    fontSize: 10,
+    fontWeight: "900",
+  },
+  title: {
+    color: Playbook.ink,
+    fontFamily: Fonts.display,
+    fontSize: 39,
+    lineHeight: 42,
+    fontWeight: "900",
+  },
+  description: { color: Playbook.muted, fontSize: 15, lineHeight: 23 },
+  source: { color: Playbook.inkSoft, fontWeight: "700", fontSize: 13 },
   actions: { flexDirection: "row", flexWrap: "wrap", gap: 10, marginTop: 7 },
   primaryButton: {
     flexGrow: 1,
     alignItems: "center",
-    borderRadius: 12,
-    backgroundColor: "#111111",
+    borderRadius: 8,
+    backgroundColor: Playbook.ink,
     padding: 14,
   },
-  primaryButtonText: { color: "#ffffff", fontWeight: "900" },
+  primaryButtonText: { color: Playbook.paper, fontWeight: "900" },
   secondaryButton: {
     alignItems: "center",
-    borderRadius: 12,
+    borderRadius: 8,
     borderWidth: 1,
-    borderColor: "#333333",
+    borderColor: Playbook.ink,
     paddingHorizontal: 20,
     paddingVertical: 14,
   },
-  secondaryButtonText: { color: "#111111", fontWeight: "900" },
-  message: { color: "#555555", fontSize: 12, lineHeight: 18 },
+  secondaryButtonText: { color: Playbook.ink, fontWeight: "900" },
+  message: {
+    color: Playbook.orange,
+    fontSize: 12,
+    fontWeight: "700",
+    lineHeight: 18,
+  },
   warmup: {
     marginHorizontal: 20,
-    borderRadius: 16,
-    backgroundColor: "#f2f2f2",
+    backgroundColor: Playbook.orangeSoft,
+    borderLeftWidth: 3,
+    borderLeftColor: Playbook.orange,
     padding: 18,
     gap: 8,
   },
   warmupLabel: {
-    color: "#111111",
+    color: Playbook.ink,
+    fontFamily: Fonts.mono,
     fontSize: 11,
     fontWeight: "900",
     letterSpacing: 1.2,
   },
-  body: { color: "#555555", fontSize: 14, lineHeight: 21 },
+  body: { color: Playbook.muted, fontSize: 14, lineHeight: 21 },
   sections: { padding: 20, gap: 28 },
   section: { gap: 8 },
-  sectionIndex: { color: "#888888", fontSize: 12, fontWeight: "900" },
-  sectionTitle: { color: "#111111", fontSize: 24, fontWeight: "900" },
-  sectionDescription: { color: "#777777", fontSize: 13 },
+  sectionIndex: {
+    color: Playbook.orange,
+    fontFamily: Fonts.mono,
+    fontSize: 11,
+    fontWeight: "900",
+  },
+  sectionTitle: {
+    color: Playbook.ink,
+    fontFamily: Fonts.display,
+    fontSize: 29,
+    fontWeight: "900",
+    borderTopWidth: 1,
+    borderTopColor: Playbook.ink,
+    paddingTop: 10,
+  },
+  sectionDescription: { color: Playbook.muted, fontSize: 13 },
   items: { marginTop: 8, gap: 12 },
   item: {
-    borderRadius: 16,
     borderWidth: 1,
-    borderColor: "#dddddd",
-    backgroundColor: "#ffffff",
+    borderColor: Playbook.line,
+    backgroundColor: Playbook.paper,
     padding: 16,
     gap: 8,
   },
@@ -307,13 +355,18 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     gap: 12,
   },
-  itemTitle: { flex: 1, color: "#111111", fontSize: 16, fontWeight: "800" },
-  volume: { color: "#333333", fontSize: 12, fontWeight: "900" },
+  itemTitle: { flex: 1, color: Playbook.ink, fontSize: 16, fontWeight: "800" },
+  volume: {
+    color: Playbook.inkSoft,
+    fontFamily: Fonts.mono,
+    fontSize: 11,
+    fontWeight: "900",
+  },
   moveLink: {
-    color: "#111111",
+    color: Playbook.orange,
     textDecorationLine: "underline",
     fontWeight: "800",
     fontSize: 13,
   },
-  rest: { color: "#777777", fontSize: 11, fontWeight: "700" },
+  rest: { color: Playbook.muted, fontSize: 11, fontWeight: "700" },
 });

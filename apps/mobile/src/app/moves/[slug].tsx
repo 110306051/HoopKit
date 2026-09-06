@@ -9,6 +9,8 @@ import {
   LoadingState,
 } from "@/components/content-state";
 import { MuxHighlightPlayer } from "@/components/mux-highlight-player";
+import { ReportContentButton } from "@/components/report-content-button";
+import { Fonts, Playbook } from "@/constants/theme";
 import { useApiResource } from "@/hooks/use-api-resource";
 import { useRefreshOnFocus } from "@/hooks/use-refresh-on-focus";
 import { getMove } from "@/lib/content-api";
@@ -174,6 +176,7 @@ export default function MoveDetailScreen() {
             ))}
           </View>
         ) : null}
+        <ReportContentButton targetType="move" targetId={move.id} />
       </ScrollView>
     </Screen>
   );
@@ -243,7 +246,7 @@ function difficultyLabel(value: string) {
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: "#ffffff" },
+  screen: { flex: 1, backgroundColor: Playbook.canvas },
   safe: { flex: 1 },
   content: {
     width: "100%",
@@ -255,68 +258,99 @@ const styles = StyleSheet.create({
   fallback: {
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#eeeeee",
+    backgroundColor: Playbook.surface,
   },
   fallbackText: {
-    color: "#111111",
+    color: Playbook.orange,
+    fontFamily: Fonts.display,
     fontSize: 20,
     fontWeight: "900",
     letterSpacing: 2,
   },
-  heading: { padding: 22, gap: 11 },
+  heading: {
+    padding: 22,
+    gap: 11,
+    backgroundColor: Playbook.paper,
+    borderBottomWidth: 1,
+    borderBottomColor: Playbook.line,
+  },
   badges: { flexDirection: "row", gap: 8, flexWrap: "wrap" },
   pill: {
     overflow: "hidden",
-    borderRadius: 8,
-    backgroundColor: "#eeeeee",
-    color: "#333333",
+    borderRadius: 5,
+    backgroundColor: Playbook.surface,
+    color: Playbook.inkSoft,
     paddingHorizontal: 9,
     paddingVertical: 5,
     fontSize: 11,
     fontWeight: "800",
   },
-  pillDark: { backgroundColor: "#111111", color: "#ffffff" },
+  pillDark: { backgroundColor: Playbook.ink, color: Playbook.paper },
   title: {
-    color: "#111111",
+    color: Playbook.ink,
+    fontFamily: Fonts.display,
     fontSize: 34,
     lineHeight: 40,
     fontWeight: "900",
     letterSpacing: -0.8,
   },
-  summary: { color: "#555555", fontSize: 16, lineHeight: 25 },
-  player: { color: "#333333", fontSize: 13, fontWeight: "700" },
+  summary: { color: Playbook.muted, fontSize: 16, lineHeight: 25 },
+  player: { color: Playbook.inkSoft, fontSize: 13, fontWeight: "700" },
   primaryButton: {
     alignItems: "center",
-    backgroundColor: "#111111",
-    borderRadius: 12,
+    backgroundColor: Playbook.ink,
+    borderRadius: 8,
     padding: 14,
     marginTop: 5,
   },
-  primaryButtonText: { color: "#ffffff", fontWeight: "900" },
-  actionMessage: { color: "#555555", fontSize: 12, textAlign: "center" },
+  primaryButtonText: { color: Playbook.paper, fontWeight: "900" },
+  actionMessage: {
+    color: Playbook.orange,
+    fontSize: 12,
+    fontWeight: "700",
+    textAlign: "center",
+  },
   section: { paddingHorizontal: 20, paddingTop: 28 },
-  sectionTitle: { color: "#111111", fontSize: 23, fontWeight: "900" },
-  sectionSubtitle: { color: "#777777", marginTop: 5, fontSize: 13 },
+  sectionTitle: {
+    color: Playbook.ink,
+    fontFamily: Fonts.display,
+    fontSize: 27,
+    fontWeight: "900",
+    borderTopWidth: 1,
+    borderTopColor: Playbook.ink,
+    paddingTop: 12,
+  },
+  sectionSubtitle: { color: Playbook.muted, marginTop: 5, fontSize: 13 },
   sectionContent: { marginTop: 14 },
   stack: { gap: 12 },
   step: {
     flexDirection: "row",
     gap: 14,
-    borderRadius: 16,
     borderWidth: 1,
-    borderColor: "#dddddd",
-    backgroundColor: "#ffffff",
+    borderColor: Playbook.line,
+    backgroundColor: Playbook.paper,
     padding: 16,
   },
-  stepNumber: { color: "#111111", fontSize: 17, fontWeight: "900" },
+  stepNumber: {
+    color: Playbook.orange,
+    fontFamily: Fonts.mono,
+    fontSize: 15,
+    fontWeight: "900",
+  },
   stepCopy: { flex: 1, gap: 5 },
-  stepTitle: { color: "#111111", fontSize: 16, fontWeight: "800" },
-  body: { flex: 1, color: "#555555", fontSize: 14, lineHeight: 22 },
-  muted: { color: "#777777" },
+  stepTitle: { color: Playbook.ink, fontSize: 16, fontWeight: "800" },
+  body: { flex: 1, color: Playbook.muted, fontSize: 14, lineHeight: 22 },
+  muted: { color: Playbook.muted },
   infoGrid: { paddingHorizontal: 20, paddingTop: 28, gap: 12 },
-  infoCard: { borderRadius: 16, padding: 18, backgroundColor: "#f2f2f2" },
+  infoCard: {
+    padding: 18,
+    backgroundColor: Playbook.surface,
+    borderLeftWidth: 3,
+    borderLeftColor: Playbook.orange,
+  },
   infoLabel: {
-    color: "#111111",
+    color: Playbook.ink,
+    fontFamily: Fonts.mono,
     fontSize: 12,
     fontWeight: "900",
     letterSpacing: 1,
@@ -325,11 +359,12 @@ const styles = StyleSheet.create({
   listRow: {
     flexDirection: "row",
     gap: 9,
-    borderRadius: 14,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: Playbook.paper,
+    borderBottomWidth: 1,
+    borderBottomColor: Playbook.line,
     padding: 15,
   },
-  bullet: { color: "#111111", fontSize: 20, lineHeight: 20 },
+  bullet: { color: Playbook.orange, fontSize: 20, lineHeight: 20 },
   tagRow: {
     paddingHorizontal: 20,
     paddingTop: 24,

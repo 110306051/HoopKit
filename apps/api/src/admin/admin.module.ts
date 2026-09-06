@@ -12,9 +12,12 @@ import { MuxWebhookController } from './media/mux-webhook.controller';
 import { MuxService } from '../media/mux.service';
 import { EditorialController } from './content/editorial.controller';
 import { EditorialService } from './content/editorial.service';
+import { MeModule } from '../me/me.module';
+import { AdminReportsController } from './reports/admin-reports.controller';
+import { AdminReportsService } from './reports/admin-reports.service';
 
 @Module({
-  imports: [AuthModule],
+  imports: [AuthModule, MeModule],
   controllers: [
     AdminController,
     AdminContentController,
@@ -22,6 +25,7 @@ import { EditorialService } from './content/editorial.service';
     AdminMediaController,
     MuxWebhookController,
     EditorialController,
+    AdminReportsController,
   ],
   providers: [
     AdminService,
@@ -30,6 +34,7 @@ import { EditorialService } from './content/editorial.service';
     AdminMediaService,
     MuxService,
     EditorialService,
+    AdminReportsService,
   ],
 })
 export class AdminModule {}

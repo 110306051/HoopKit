@@ -92,7 +92,7 @@ export function MoveEditorForm({
   }
 
   return (
-    <form onSubmit={submit} className="space-y-6">
+    <form onSubmit={submit} className="editor-form space-y-5">
       <EditorSection
         title="招式基本資料"
         description="這些欄位會成為 Mobile 招式列表與詳細頁的主要內容。"
@@ -406,14 +406,14 @@ export function MoveEditorForm({
       </EditorSection>
 
       {error ? (
-        <p className="rounded-xl border border-[#efb39e] bg-[#fff1eb] p-4 text-sm font-bold text-[#9f3c1a]">
+        <p className="border-l-4 border-[#f05a28] bg-[#fff0e9] p-4 text-sm font-bold text-[#873719]">
           {error}
         </p>
       ) : null}
-      <div className="flex flex-wrap justify-end gap-3">
+      <div className="sticky bottom-4 z-10 flex flex-wrap justify-end gap-3 border border-[#d7d7d0] bg-white/95 p-3 shadow-[0_12px_35px_rgba(18,18,18,.12)] backdrop-blur">
         <button
           type="button"
-          className="rounded-xl border border-[#d8d6cd] bg-white px-6 py-3 font-bold"
+          className="secondary-action"
           onClick={() => router.back()}
         >
           取消
@@ -421,7 +421,7 @@ export function MoveEditorForm({
         <button
           type="submit"
           disabled={saving || !categoryId}
-          className="rounded-xl bg-[#111711] px-7 py-3 font-bold text-white disabled:opacity-50"
+          className="primary-action disabled:opacity-50"
         >
           {saving ? "儲存中…" : move ? "儲存招式" : "建立招式"}
         </button>
@@ -440,10 +440,12 @@ export function EditorSection({
   children: React.ReactNode;
 }) {
   return (
-    <section className="rounded-2xl border border-[#d8d6cd] bg-[#fbfaf6] p-6 lg:p-8">
-      <h2 className="text-xl font-extrabold">{title}</h2>
-      <p className="mt-1 text-sm leading-6 text-[#737b71]">{description}</p>
-      <div className="mt-6 space-y-5">{children}</div>
+    <section className="border border-[#d7d7d0] bg-white p-6 lg:grid lg:grid-cols-[220px_1fr] lg:gap-10 lg:p-8">
+      <header>
+        <h2 className="display-type text-2xl font-black">{title}</h2>
+        <p className="mt-2 text-sm leading-6 text-[#696964]">{description}</p>
+      </header>
+      <div className="mt-6 space-y-5 lg:mt-0">{children}</div>
     </section>
   );
 }
@@ -461,9 +463,9 @@ export function Field({
 }) {
   return (
     <label className="block">
-      <span className="mb-2 block text-sm font-bold text-[#30392f]">
+      <span className="mb-2 block text-sm font-bold text-[#30302d]">
         {label}
-        {required ? <span className="text-[#d85a2c]"> *</span> : null}
+        {required ? <span className="text-[#f05a28]"> *</span> : null}
       </span>
       {children}
       {hint ? (
@@ -491,7 +493,7 @@ function ChoiceGrid({
         {options.map((option) => (
           <label
             key={option.id}
-            className="flex items-center gap-3 rounded-xl border border-[#dedcd4] bg-white px-4 py-3 text-sm"
+            className="flex items-center gap-3 rounded-lg border border-[#d7d7d0] bg-white px-4 py-3 text-sm transition hover:border-[#121212]"
           >
             <input
               type="checkbox"
@@ -526,7 +528,7 @@ export function NestedCard({
   children: React.ReactNode;
 }) {
   return (
-    <div className="rounded-xl border border-[#d8d6cd] bg-white p-4">
+    <div className="border-l-2 border-[#121212] bg-[#f8f8f6] p-4">
       <div className="mb-4 flex items-center justify-between gap-3">
         <p className="text-sm font-extrabold">{label}</p>
         <div className="flex gap-2">
@@ -554,7 +556,7 @@ export function AddButton({
       type="button"
       disabled={disabled}
       onClick={onClick}
-      className="w-full rounded-xl border border-dashed border-[#9daa82] bg-[#f5f9e9] px-5 py-3 text-sm font-bold text-[#50671e] disabled:opacity-45"
+      className="w-full rounded-lg border border-dashed border-[#a8a8a0] bg-white px-5 py-3 text-sm font-bold text-[#30302d] transition hover:border-[#f05a28] hover:text-[#c94b22] disabled:opacity-45"
     >
       ＋ {label}
     </button>
@@ -574,7 +576,7 @@ function SmallButton({
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-lg border px-2.5 py-1.5 text-xs font-bold ${danger ? "border-[#efb39e] text-[#a33d1d]" : "border-[#d8d6cd] text-[#596157]"}`}
+      className={`rounded-md border bg-white px-2.5 py-1.5 text-xs font-bold ${danger ? "border-[#efc6b7] text-[#a33d1d]" : "border-[#d7d7d0] text-[#595954]"}`}
     >
       {label}
     </button>

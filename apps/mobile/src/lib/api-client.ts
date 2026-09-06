@@ -5,7 +5,18 @@ const localBase =
     ? "http://10.0.2.2:3001/v1"
     : "http://127.0.0.1:3001/v1";
 
-export const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL ?? localBase;
+const configuredBase = process.env.EXPO_PUBLIC_API_BASE_URL?.trim();
+
+if (
+  !__DEV__ &&
+  (!configuredBase || /localhost|127\.0\.0\.1|10\.0\.2\.2/.test(configuredBase))
+) {
+  throw new Error(
+    "Production build requires a public EXPO_PUBLIC_API_BASE_URL.",
+  );
+}
+
+export const API_BASE_URL = (configuredBase ?? localBase).replace(/\/$/, "");
 
 export async function apiRequest<T>(
   path: string,

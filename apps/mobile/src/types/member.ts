@@ -69,6 +69,34 @@ export type PersonalPlanDetail = {
   sections: PersonalPlanSection[];
 };
 
+export type UserClipPlayer = {
+  id: string;
+  slug: string;
+  name: string;
+  shortName: string | null;
+  avatarUrl: string | null;
+};
+
+export type UserClip = {
+  id: string;
+  title: string;
+  description: string;
+  tags: string[];
+  status: "pending" | "ready" | "errored";
+  playbackId: string | null;
+  streamUrl: string | null;
+  thumbnailUrl: string | null;
+  durationMs: number | null;
+  originalFileName: string;
+  fileSizeBytes: number;
+  errorMessage: string | null;
+  createdAt: string;
+  players: UserClipPlayer[];
+};
+
+export type UserClipList = { items: UserClip[] };
+export type UserClipOptions = { players: UserClipPlayer[] };
+
 export type WorkoutSessionStatus =
   "active" | "paused" | "completed" | "abandoned";
 

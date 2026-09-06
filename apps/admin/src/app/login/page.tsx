@@ -20,25 +20,25 @@ export default async function LoginPage() {
 
   return (
     <main className="relative min-h-screen overflow-hidden">
-      <div className="absolute inset-y-0 left-0 hidden w-[46%] bg-[#111711] lg:block">
-        <div className="court-grid absolute inset-0 opacity-35" />
-        <div className="absolute -left-32 top-1/2 h-96 w-96 -translate-y-1/2 rounded-full border border-[#bff54a]/50" />
-        <div className="absolute -left-12 top-1/2 h-52 w-52 -translate-y-1/2 rounded-full border border-[#bff54a]/40" />
+      <div className="absolute inset-y-0 left-0 hidden w-[46%] bg-[#121212] lg:block">
+        <div className="court-grid absolute inset-0" />
+        <div className="absolute -left-32 top-1/2 h-96 w-96 -translate-y-1/2 rounded-full border border-white/15" />
+        <div className="absolute -left-12 top-1/2 h-52 w-52 -translate-y-1/2 rounded-full border border-[#f05a28]/70" />
         <div className="relative flex h-full flex-col justify-between p-14 text-white">
           <div className="flex items-center gap-3">
-            <span className="grid size-10 place-items-center rounded-full bg-[#bff54a] font-black text-[#111711]">
-              H
+            <span className="grid size-10 place-items-center rounded-lg bg-white font-black text-[#121212]">
+              H<span className="text-[#f05a28]">.</span>
             </span>
-            <span className="font-[var(--font-manrope)] text-lg font-extrabold tracking-tight">
-              HOOPKIT STUDIO
+            <span className="display-type text-xl font-black tracking-tight">
+              HOOPKIT
             </span>
           </div>
 
           <div className="max-w-md pb-10">
-            <p className="mb-5 text-xs font-bold tracking-[0.24em] text-[#bff54a]">
-              BUILD BETTER REPS
+            <p className="utility-type mb-5 text-[10px] font-bold tracking-[0.2em] text-[#f05a28]">
+              PLAYBOOK STUDIO / STAFF ONLY
             </p>
-            <h1 className="font-[var(--font-manrope)] text-5xl font-extrabold leading-[1.08] tracking-[-0.04em]">
+            <h1 className="display-type text-6xl font-black leading-[.94] tracking-[-0.03em]">
               把每一次訓練，
               <br />
               變成可執行的內容。
@@ -57,18 +57,18 @@ export default async function LoginPage() {
       <section className="ml-auto flex min-h-screen w-full items-center px-6 py-12 lg:w-[54%] lg:px-16">
         <div className="mx-auto w-full max-w-md">
           <div className="mb-12 flex items-center gap-3 lg:hidden">
-            <span className="grid size-10 place-items-center rounded-full bg-[#111711] font-black text-[#bff54a]">
-              H
+            <span className="grid size-10 place-items-center rounded-lg bg-[#121212] font-black text-white">
+              H<span className="text-[#f05a28]">.</span>
             </span>
-            <span className="font-[var(--font-manrope)] font-extrabold">
-              HOOPKIT STUDIO
+            <span className="display-type text-xl font-black">
+              HOOPKIT
             </span>
           </div>
 
-          <p className="text-xs font-bold tracking-[0.2em] text-[#758650]">
-            CONTENT OPERATIONS
+          <p className="page-kicker">
+            CONTENT OPERATIONS / SIGN IN
           </p>
-          <h2 className="mt-4 font-[var(--font-manrope)] text-4xl font-extrabold tracking-[-0.035em]">
+          <h2 className="display-type mt-4 text-5xl font-black tracking-[-0.035em]">
             歡迎回來
           </h2>
           <p className="mt-3 text-[15px] leading-7 text-[#697067]">
@@ -77,8 +77,8 @@ export default async function LoginPage() {
 
           <LoginForm />
 
-          <div className="mt-8 flex items-start gap-3 border-t border-[#d8d6cd] pt-6 text-xs leading-6 text-[#7b8379]">
-            <span className="mt-1 size-2 shrink-0 rounded-full bg-[#bff54a] ring-4 ring-[#bff54a]/20" />
+          <div className="mt-8 flex items-start gap-3 border-t border-[#d7d7d0] pt-6 text-xs leading-6 text-[#777771]">
+            <span className="mt-1 size-2 shrink-0 rounded-full bg-[#277a48] ring-4 ring-[#277a48]/15" />
             登入由 Supabase Auth 驗證；HoopKit 不會在自己的資料表保存密碼。
           </div>
         </div>

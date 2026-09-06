@@ -16,14 +16,10 @@ export default async function NewWorkoutPage() {
   );
   return (
     <StudioShell email={session.email}>
-      <main className="mx-auto max-w-6xl px-5 py-8 lg:px-10 lg:py-12">
-        <p className="text-xs font-bold tracking-[0.2em] text-[#758650]">
-          NEW WORKOUT
-        </p>
-        <h1 className="mt-3 text-4xl font-extrabold tracking-[-0.04em]">
-          新增公開訓練菜單
-        </h1>
-        <p className="mb-9 mt-3 text-sm leading-7 text-[#697067]">
+      <main className="studio-page max-w-6xl">
+        <p className="court-index page-kicker pt-7">WORKOUTS / NEW</p>
+        <h1 className="page-title">新增公開訓練菜單</h1>
+        <p className="mb-9 mt-4 text-sm leading-7 text-[#696964]">
           建立可供 Mobile 使用者導入的官方訓練模板。
         </p>
         {options.ok ? (

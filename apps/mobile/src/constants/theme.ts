@@ -7,13 +7,32 @@ import "@/global.css";
 
 import { Platform } from "react-native";
 
+export const Playbook = {
+  ink: "#121212",
+  inkSoft: "#30302D",
+  muted: "#696964",
+  mutedLight: "#8A8A84",
+  canvas: "#F5F5F2",
+  paper: "#FFFFFF",
+  surface: "#EEEEEA",
+  line: "#D7D7D0",
+  lineStrong: "#A8A8A0",
+  orange: "#F05A28",
+  orangeSoft: "#FFF0E9",
+  green: "#277A48",
+  greenSoft: "#E9F4ED",
+  blue: "#315EFB",
+  film: "#101114",
+  danger: "#9B3E22",
+} as const;
+
 export const Colors = {
   light: {
-    text: "#000000",
-    background: "#ffffff",
-    backgroundElement: "#F0F0F3",
-    backgroundSelected: "#E0E1E6",
-    textSecondary: "#60646C",
+    text: Playbook.ink,
+    background: Playbook.canvas,
+    backgroundElement: Playbook.paper,
+    backgroundSelected: Playbook.surface,
+    textSecondary: Playbook.muted,
   },
   dark: {
     text: "#ffffff",
@@ -28,6 +47,7 @@ export type ThemeColor = keyof typeof Colors.light & keyof typeof Colors.dark;
 
 export const Fonts = Platform.select({
   ios: {
+    display: "Avenir Next Condensed",
     /** iOS `UIFontDescriptorSystemDesignDefault` */
     sans: "system-ui",
     /** iOS `UIFontDescriptorSystemDesignSerif` */
@@ -38,12 +58,14 @@ export const Fonts = Platform.select({
     mono: "ui-monospace",
   },
   default: {
+    display: "sans-serif-condensed",
     sans: "normal",
     serif: "serif",
     rounded: "normal",
     mono: "monospace",
   },
   web: {
+    display: "Bahnschrift Condensed, Arial Narrow, sans-serif",
     sans: "var(--font-display)",
     serif: "var(--font-serif)",
     rounded: "var(--font-rounded)",

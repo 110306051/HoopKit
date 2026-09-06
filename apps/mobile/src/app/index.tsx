@@ -8,6 +8,8 @@ import {
   ErrorState,
   LoadingState,
 } from "@/components/content-state";
+import { BrandLockup, SectionLabel } from "@/components/playbook-ui";
+import { Fonts, Playbook } from "@/constants/theme";
 import { useApiResource } from "@/hooks/use-api-resource";
 import { getMoves } from "@/lib/content-api";
 import { useSession } from "@/providers/session-provider";
@@ -23,7 +25,7 @@ export default function HomeScreen() {
       <SafeAreaView edges={["top"]} style={styles.safe}>
         <ScrollView contentContainerStyle={styles.content}>
           <View style={styles.topbar}>
-            <Text style={styles.brand}>HOOPKIT</Text>
+            <BrandLockup />
             <Pressable
               onPress={() => router.push("/account" as Href)}
               style={styles.accountButton}
@@ -34,14 +36,16 @@ export default function HomeScreen() {
             </Pressable>
           </View>
           <View style={styles.hero}>
-            <Text style={styles.kicker}>BASKETBALL TRAINING LIBRARY</Text>
-            <Text style={styles.heroTitle}>
-              把球星動作，拆成今天就能練的招式。
-            </Text>
-            <Text style={styles.heroBody}>
-              看懂動作要點與使用時機，再收藏或組合成自己的訓練流程。
-            </Text>
-            <View style={styles.heroActions}>
+            <View style={styles.courtCircle} />
+            <View style={styles.heroContent}>
+              <Text style={styles.kicker}>TODAY&apos;S PLAY / 01</Text>
+              <Text style={styles.heroTitle}>
+                把球星動作，拆成今天就能練的招式。
+              </Text>
+              <Text style={styles.heroBody}>
+                看懂動作要點與使用時機，再收藏或組合成自己的訓練流程。
+              </Text>
+              <View style={styles.heroActions}>
               <Pressable
                 style={styles.primaryButton}
                 onPress={() => router.push("/workouts" as Href)}
@@ -54,14 +58,15 @@ export default function HomeScreen() {
               >
                 <Text style={styles.secondaryButtonText}>我的空間</Text>
               </Pressable>
+              </View>
             </View>
           </View>
           <View style={styles.sectionHeader}>
-            <View>
-              <Text style={styles.eyebrow}>MOVE LIBRARY</Text>
-              <Text style={styles.sectionTitle}>招式探索</Text>
-            </View>
-            <Text style={styles.count}>{data?.total ?? 0} 招</Text>
+            <SectionLabel
+              eyebrow="MOVE LIBRARY"
+              title="招式探索"
+              value={`${data?.total ?? 0} MOVES`}
+            />
           </View>
           {loading ? (
             <LoadingState />
@@ -128,7 +133,7 @@ function difficultyLabel(value: string) {
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: "#ffffff" },
+  screen: { flex: 1, backgroundColor: Playbook.canvas },
   safe: { flex: 1 },
   content: {
     width: "100%",
@@ -141,44 +146,53 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 20,
-    paddingVertical: 16,
-  },
-  brand: {
-    color: "#111111",
-    fontSize: 18,
-    fontWeight: "900",
-    letterSpacing: 1.4,
+    paddingVertical: 14,
+    backgroundColor: Playbook.paper,
   },
   accountButton: {
     borderWidth: 1,
-    borderColor: "#222222",
-    borderRadius: 10,
+    borderColor: Playbook.ink,
+    borderRadius: 7,
     paddingHorizontal: 13,
     paddingVertical: 8,
   },
-  accountButtonText: { color: "#111111", fontSize: 12, fontWeight: "800" },
+  accountButtonText: { color: Playbook.ink, fontSize: 12, fontWeight: "800" },
   hero: {
     marginHorizontal: 18,
-    marginTop: 8,
-    borderRadius: 22,
-    backgroundColor: "#f2f2f2",
-    padding: 24,
-    gap: 13,
+    marginTop: 12,
+    minHeight: 360,
+    overflow: "hidden",
+    backgroundColor: Playbook.ink,
+    padding: 26,
+    justifyContent: "flex-end",
+  },
+  heroContent: { gap: 13, zIndex: 1 },
+  courtCircle: {
+    position: "absolute",
+    width: 270,
+    height: 270,
+    borderRadius: 135,
+    borderWidth: 1,
+    borderColor: "#FFFFFF24",
+    right: -105,
+    top: -72,
   },
   kicker: {
-    color: "#666666",
+    color: Playbook.orange,
+    fontFamily: Fonts.mono,
     fontSize: 10,
     fontWeight: "900",
     letterSpacing: 1.5,
   },
   heroTitle: {
-    color: "#111111",
-    fontSize: 32,
-    lineHeight: 39,
+    color: Playbook.paper,
+    fontFamily: Fonts.display,
+    fontSize: 42,
+    lineHeight: 45,
     fontWeight: "900",
     letterSpacing: -1,
   },
-  heroBody: { color: "#555555", fontSize: 15, lineHeight: 23 },
+  heroBody: { color: "#FFFFFFA3", fontSize: 15, lineHeight: 23 },
   heroActions: {
     flexDirection: "row",
     flexWrap: "wrap",
@@ -186,71 +200,57 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   primaryButton: {
-    borderRadius: 11,
-    backgroundColor: "#111111",
+    borderRadius: 7,
+    backgroundColor: Playbook.orange,
     paddingHorizontal: 16,
     paddingVertical: 12,
   },
-  primaryButtonText: { color: "#ffffff", fontWeight: "800" },
+  primaryButtonText: { color: Playbook.paper, fontWeight: "900" },
   secondaryButton: {
-    borderRadius: 11,
+    borderRadius: 7,
     borderWidth: 1,
-    borderColor: "#999999",
+    borderColor: "#FFFFFF66",
     paddingHorizontal: 16,
     paddingVertical: 12,
   },
-  secondaryButtonText: { color: "#222222", fontWeight: "800" },
+  secondaryButtonText: { color: Playbook.paper, fontWeight: "800" },
   sectionHeader: {
     marginHorizontal: 20,
     marginBottom: 16,
     marginTop: 34,
-    flexDirection: "row",
-    alignItems: "flex-end",
-    justifyContent: "space-between",
+    borderTopWidth: 1,
+    borderTopColor: Playbook.ink,
+    paddingTop: 15,
   },
-  eyebrow: {
-    color: "#777777",
-    fontSize: 10,
-    fontWeight: "900",
-    letterSpacing: 1.5,
-  },
-  sectionTitle: {
-    color: "#111111",
-    fontSize: 27,
-    fontWeight: "900",
-    marginTop: 5,
-  },
-  count: { color: "#777777", fontSize: 12 },
   grid: { paddingHorizontal: 18, gap: 16 },
   card: {
     overflow: "hidden",
-    borderRadius: 18,
     borderWidth: 1,
-    borderColor: "#dddddd",
-    backgroundColor: "#ffffff",
+    borderColor: Playbook.line,
+    backgroundColor: Playbook.paper,
   },
   pressed: { opacity: 0.7, transform: [{ scale: 0.99 }] },
   cover: { width: "100%", aspectRatio: 16 / 9 },
   coverFallback: {
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#eeeeee",
+    backgroundColor: Playbook.surface,
   },
-  fallbackMark: { color: "#111111", fontSize: 34, fontWeight: "900" },
+  fallbackMark: { color: Playbook.orange, fontFamily: Fonts.display, fontSize: 34, fontWeight: "900" },
   cardBody: { padding: 17, gap: 8 },
   badgeRow: { flexDirection: "row", alignItems: "center", gap: 8 },
   badge: {
     overflow: "hidden",
-    borderRadius: 7,
-    backgroundColor: "#111111",
-    color: "#ffffff",
+    borderRadius: 5,
+    backgroundColor: Playbook.ink,
+    color: Playbook.paper,
     paddingHorizontal: 8,
     paddingVertical: 4,
     fontSize: 10,
     fontWeight: "900",
   },
-  category: { color: "#777777", fontSize: 11, fontWeight: "700" },
-  cardTitle: { color: "#111111", fontSize: 21, fontWeight: "900" },
-  summary: { color: "#555555", fontSize: 14, lineHeight: 21 },
-  player: { color: "#333333", fontSize: 12, fontWeight: "700", marginTop: 2 },
+  category: { color: Playbook.muted, fontSize: 11, fontWeight: "700" },
+  cardTitle: { color: Playbook.ink, fontFamily: Fonts.display, fontSize: 25, fontWeight: "900" },
+  summary: { color: Playbook.muted, fontSize: 14, lineHeight: 21 },
+  player: { color: Playbook.inkSoft, fontSize: 12, fontWeight: "700", marginTop: 2 },
 });

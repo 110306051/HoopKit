@@ -152,9 +152,24 @@ export function MediaManager({
     }
   }
 
+  const readyCount = assets.filter((asset) => asset.status === "ready").length;
+  const videoCount = assets.filter((asset) => asset.kind === "video").length;
+
   return (
-    <div className="mt-10 space-y-10">
-      <section className="grid gap-5 xl:grid-cols-2">
+    <div className="mt-10 space-y-12">
+      <section className="grid overflow-hidden border border-[#27282d] bg-[#101114] xl:grid-cols-[.72fr_1fr_1fr]">
+        <aside className="court-grid relative flex min-h-64 flex-col justify-between border-b border-white/10 p-6 text-white xl:border-b-0 xl:border-r">
+          <div>
+            <p className="utility-type text-[10px] font-bold tracking-[0.16em] text-[#ff7447]">INGEST STATION</p>
+            <h2 className="display-type mt-4 text-4xl font-black leading-none">素材進站</h2>
+            <p className="mt-4 text-sm leading-6 text-white/55">選擇原始檔案，系統會建立資產紀錄並交給對應的雲端服務處理。</p>
+          </div>
+          <dl className="mt-8 grid grid-cols-3 gap-3 border-t border-white/15 pt-5">
+            <div><dt className="utility-type text-[9px] text-white/40">ALL</dt><dd className="display-type mt-1 text-3xl font-black">{assets.length}</dd></div>
+            <div><dt className="utility-type text-[9px] text-white/40">READY</dt><dd className="display-type mt-1 text-3xl font-black text-[#72c58e]">{readyCount}</dd></div>
+            <div><dt className="utility-type text-[9px] text-white/40">VIDEO</dt><dd className="display-type mt-1 text-3xl font-black text-[#7190ff]">{videoCount}</dd></div>
+          </dl>
+        </aside>
         <UploadCard
           eyebrow="SUPABASE STORAGE"
           title="上傳圖片"
@@ -172,7 +187,7 @@ export function MediaManager({
             />
             <input
               ref={imageInput}
-              className="block w-full text-sm file:mr-4 file:rounded-xl file:border-0 file:bg-[#e8f5c9] file:px-4 file:py-3 file:font-bold"
+              className="block w-full text-sm text-white/70 file:mr-4 file:rounded-md file:border-0 file:bg-white/10 file:px-4 file:py-3 file:font-bold file:text-white"
               type="file"
               accept={IMAGE_UPLOAD_TYPES.join(",")}
               onChange={(event) =>
@@ -181,7 +196,7 @@ export function MediaManager({
               disabled={imageUpload.busy}
             />
             <button
-              className="w-full rounded-xl bg-[#111711] px-5 py-3 font-bold text-white disabled:opacity-45"
+              className="w-full rounded-md bg-white px-5 py-3 font-bold text-[#121212] transition hover:bg-[#e6e6e2] disabled:opacity-45"
               disabled={!imageFile || imageUpload.busy}
             >
               {imageUpload.busy ? "上傳中…" : "上傳圖片"}
@@ -206,7 +221,7 @@ export function MediaManager({
             />
             <input
               ref={videoInput}
-              className="block w-full text-sm file:mr-4 file:rounded-xl file:border-0 file:bg-[#ffe5d9] file:px-4 file:py-3 file:font-bold"
+              className="block w-full text-sm text-white/70 file:mr-4 file:rounded-md file:border-0 file:bg-[#315efb] file:px-4 file:py-3 file:font-bold file:text-white"
               type="file"
               accept="video/*"
               onChange={(event) =>
@@ -215,7 +230,7 @@ export function MediaManager({
               disabled={videoUpload.busy}
             />
             <button
-              className="w-full rounded-xl bg-[#ff6b35] px-5 py-3 font-bold text-white disabled:opacity-45"
+              className="w-full rounded-md bg-[#315efb] px-5 py-3 font-bold text-white transition hover:bg-[#244ad0] disabled:opacity-45"
               disabled={!videoFile || videoUpload.busy}
             >
               {videoUpload.busy ? "上傳中…" : "上傳影片"}
@@ -244,17 +259,15 @@ function MediaLibrary({
 }) {
   return (
     <section>
-      <div className="flex items-end justify-between gap-4">
+      <div className="flex items-end justify-between gap-4 border-b border-[#121212] pb-4">
         <div>
-          <p className="text-xs font-bold tracking-[0.18em] text-[#758650]">
-            ASSET LIBRARY
-          </p>
-          <h2 className="mt-2 text-2xl font-extrabold">
+          <p className="page-kicker">ASSET LIBRARY / ALL MEDIA</p>
+          <h2 className="display-type mt-2 text-3xl font-black">
             已建立的媒體 ({assets.length})
           </h2>
         </div>
         <button
-          className="rounded-xl border border-[#cbc9bf] bg-white px-4 py-2 text-sm font-bold disabled:opacity-50"
+          className="secondary-action disabled:opacity-50"
           onClick={onRefresh}
           disabled={refreshing}
         >
@@ -263,11 +276,11 @@ function MediaLibrary({
       </div>
 
       {assets.length ? (
-        <div className="mt-5 grid gap-5 md:grid-cols-2 2xl:grid-cols-3">
+        <div className="mt-5 grid gap-px border border-[#d7d7d0] bg-[#d7d7d0] md:grid-cols-2 2xl:grid-cols-3">
           {assets.map((asset) => (
             <article
               key={asset.id}
-              className="rounded-2xl border border-[#d8d6cd] bg-[#fbfaf6] p-4 shadow-sm"
+              className="group bg-white p-4 transition hover:bg-[#f8f8f6]"
             >
               <MediaPreview asset={asset} />
               <div className="mt-4 flex items-start justify-between gap-3">
@@ -279,23 +292,23 @@ function MediaLibrary({
                 </div>
                 <MediaStatusBadge status={asset.status} />
               </div>
-              <dl className="mt-4 grid grid-cols-2 gap-2 text-xs text-[#697067]">
+              <dl className="utility-type mt-4 grid grid-cols-2 gap-3 border-t border-[#d7d7d0] pt-4 text-[10px] leading-5 text-[#696964]">
                 <div>
-                  <dt className="font-bold text-[#111711]">類型</dt>
+                  <dt className="font-bold text-[#121212]">類型</dt>
                   <dd>
                     {asset.kind} · {asset.provider}
                   </dd>
                 </div>
                 <div>
-                  <dt className="font-bold text-[#111711]">大小</dt>
+                  <dt className="font-bold text-[#121212]">大小</dt>
                   <dd>{formatBytes(asset.fileSizeBytes)}</dd>
                 </div>
                 <div>
-                  <dt className="font-bold text-[#111711]">建立</dt>
+                  <dt className="font-bold text-[#121212]">建立</dt>
                   <dd>{new Date(asset.createdAt).toLocaleString("zh-TW")}</dd>
                 </div>
                 <div>
-                  <dt className="font-bold text-[#111711]">資產 ID</dt>
+                  <dt className="font-bold text-[#121212]">資產 ID</dt>
                   <dd className="truncate" title={asset.id}>
                     {asset.id.slice(0, 8)}…
                   </dd>
@@ -310,7 +323,7 @@ function MediaLibrary({
           ))}
         </div>
       ) : (
-        <div className="court-grid mt-5 rounded-2xl border border-dashed border-[#c9c7be] py-20 text-center text-sm font-bold text-[#858b82]">
+        <div className="mt-5 border border-dashed border-[#a8a8a0] bg-white py-20 text-center text-sm font-bold text-[#85857f]">
           尚無媒體，請從上方建立第一筆資產。
         </div>
       )}
@@ -332,23 +345,26 @@ function UploadCard({
   children: React.ReactNode;
 }) {
   return (
-    <article className="rounded-2xl border border-[#d8d6cd] bg-[#fbfaf6] p-6 shadow-sm">
-      <p className="text-[10px] font-bold tracking-[0.18em] text-[#758650]">
+    <article className="border-b border-white/10 p-6 text-white xl:border-b-0 xl:border-r">
+      <p className="utility-type text-[10px] font-bold tracking-[0.16em] text-[#819bff]">
         {eyebrow}
       </p>
-      <h2 className="mt-2 text-2xl font-extrabold">{title}</h2>
-      <p className="mt-2 text-sm leading-6 text-[#697067]">{description}</p>
+      <h2 className="display-type mt-2 text-3xl font-black">{title}</h2>
+      <p className="mt-2 text-sm leading-6 text-white/55">{description}</p>
       {children}
       {state.progress > 0 ? (
-        <div className="mt-4 h-2 overflow-hidden rounded-full bg-[#e3e1d9]">
-          <div
-            className="h-full rounded-full bg-[#8cc61b] transition-[width]"
-            style={{ width: `${state.progress}%` }}
-          />
+        <div className="mt-4">
+          <div className="utility-type mb-2 flex justify-between text-[10px] font-bold text-white/45">
+            <span>UPLOAD PROGRESS</span>
+            <span>{state.progress}%</span>
+          </div>
+          <div className="h-1 overflow-hidden bg-white/10" role="progressbar" aria-label={`${title}進度`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={state.progress}>
+            <div className="h-full bg-[#315efb] transition-[width]" style={{ width: `${state.progress}%` }} />
+          </div>
         </div>
       ) : null}
       {state.message ? (
-        <p className="mt-3 text-xs font-bold text-[#4f681d]">{state.message}</p>
+        <p className="mt-3 text-xs font-bold text-[#8fa6ff]">{state.message}</p>
       ) : null}
       {state.error ? (
         <p className="mt-3 rounded-lg bg-[#fff0eb] p-3 text-xs font-bold text-[#a33d1d]">
@@ -380,7 +396,7 @@ function MediaStatusBadge({ status }: { status: MediaAsset["status"] }) {
   };
   return (
     <span
-      className={`inline-flex rounded-full border px-2.5 py-1 text-[11px] font-bold ${value.style}`}
+      className={`utility-type inline-flex rounded-md border px-2 py-1 text-[10px] font-bold uppercase tracking-[0.05em] ${value.style}`}
     >
       {value.label}
     </span>

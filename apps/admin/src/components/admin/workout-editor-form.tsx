@@ -104,7 +104,7 @@ export function WorkoutEditorForm({
   }
 
   return (
-    <form onSubmit={submit} className="space-y-6">
+    <form onSubmit={submit} className="editor-form space-y-5">
       <EditorSection
         title="菜單基本資料"
         description="公開模板由內容團隊維護；Mobile 使用者之後可複製成自己的訓練菜單。"
@@ -238,7 +238,7 @@ export function WorkoutEditorForm({
                 </Field>
               </div>
 
-              <div className="space-y-3 border-l-2 border-[#dfe8ca] pl-4">
+              <div className="space-y-3 border-l border-[#a8a8a0] pl-4">
                 {section.items.map((item, itemIndex) => (
                   <NestedCard
                     key={item.id ?? itemIndex}
@@ -391,14 +391,14 @@ export function WorkoutEditorForm({
       </EditorSection>
 
       {error ? (
-        <p className="rounded-xl border border-[#efb39e] bg-[#fff1eb] p-4 text-sm font-bold text-[#9f3c1a]">
+        <p className="border-l-4 border-[#f05a28] bg-[#fff0e9] p-4 text-sm font-bold text-[#873719]">
           {error}
         </p>
       ) : null}
-      <div className="flex flex-wrap justify-end gap-3">
+      <div className="sticky bottom-4 z-10 flex flex-wrap justify-end gap-3 border border-[#d7d7d0] bg-white/95 p-3 shadow-[0_12px_35px_rgba(18,18,18,.12)] backdrop-blur">
         <button
           type="button"
-          className="rounded-xl border border-[#d8d6cd] bg-white px-6 py-3 font-bold"
+          className="secondary-action"
           onClick={() => router.back()}
         >
           取消
@@ -406,7 +406,7 @@ export function WorkoutEditorForm({
         <button
           type="submit"
           disabled={saving}
-          className="rounded-xl bg-[#111711] px-7 py-3 font-bold text-white disabled:opacity-50"
+          className="primary-action disabled:opacity-50"
         >
           {saving ? "儲存中…" : workout ? "儲存菜單" : "建立菜單"}
         </button>

@@ -39,6 +39,7 @@ import type {
   PersonalPlanItem,
   PersonalPlanSection,
 } from "@/types/member";
+import { Fonts, Playbook } from "@/constants/theme";
 
 type EditorData = { plan: PersonalPlanDetail; overview: MemberOverview };
 
@@ -201,7 +202,7 @@ export default function PersonalPlanEditorScreen() {
         </Pressable>
         {busy ? (
           <View style={styles.savingRow}>
-            <ActivityIndicator color="#111111" size="small" />
+            <ActivityIndicator color={Playbook.ink} size="small" />
             <Text style={styles.muted}>正在儲存變更…</Text>
           </View>
         ) : null}
@@ -329,7 +330,7 @@ function PlanHeader({
         value={description}
         onChangeText={setDescription}
         placeholder="加入這份菜單的目標或提醒"
-        placeholderTextColor="#888888"
+        placeholderTextColor={Playbook.mutedLight}
         multiline
         style={[styles.input, styles.descriptionInput]}
         maxLength={2000}
@@ -360,7 +361,7 @@ function NewSectionForm({
         value={name}
         onChangeText={setName}
         placeholder="例如：熱身、控球、投籃"
-        placeholderTextColor="#888888"
+        placeholderTextColor={Playbook.mutedLight}
         style={styles.input}
       />
       <Pressable
@@ -501,7 +502,7 @@ function SectionEditor({
             value={customTitle}
             onChangeText={setCustomTitle}
             placeholder="自訂項目名稱"
-            placeholderTextColor="#888888"
+            placeholderTextColor={Playbook.mutedLight}
             style={[styles.input, styles.flexInput]}
           />
           <Pressable
@@ -653,7 +654,7 @@ function ItemEditor({
         value={instructions}
         onChangeText={setInstructions}
         placeholder="動作提醒（選填）"
-        placeholderTextColor="#888888"
+        placeholderTextColor={Playbook.mutedLight}
         multiline
         style={[styles.input, styles.instructionsInput]}
       />
@@ -776,14 +777,14 @@ function nonNegativeNumber(value: string) {
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: "#ffffff" },
+  screen: { flex: 1, backgroundColor: Playbook.canvas },
   centered: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
     gap: 14,
     padding: 28,
-    backgroundColor: "#ffffff",
+    backgroundColor: Playbook.canvas,
   },
   content: {
     width: "100%",
@@ -793,26 +794,26 @@ const styles = StyleSheet.create({
     paddingBottom: 70,
   },
   headerCard: {
-    borderRadius: 18,
-    backgroundColor: "#f2f2f2",
+    backgroundColor: Playbook.paper,
+    borderTopWidth: 1,
+    borderTopColor: Playbook.ink,
     padding: 20,
     gap: 12,
   },
   guideCard: {
     marginTop: 14,
     borderWidth: 1,
-    borderColor: "#dddddd",
-    borderRadius: 14,
+    borderColor: Playbook.line,
     padding: 16,
     gap: 7,
-    backgroundColor: "#ffffff",
+    backgroundColor: Playbook.paper,
   },
-  guideText: { color: "#555555", fontSize: 13, lineHeight: 20 },
+  guideText: { color: Playbook.muted, fontSize: 13, lineHeight: 20 },
   startButton: {
     alignItems: "center",
     justifyContent: "center",
-    borderRadius: 14,
-    backgroundColor: "#111111",
+    borderRadius: 8,
+    backgroundColor: Playbook.orange,
     paddingHorizontal: 18,
     paddingVertical: 16,
     marginTop: 14,
@@ -824,26 +825,28 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
   eyebrow: {
-    color: "#666666",
+    color: Playbook.orange,
+    fontFamily: Fonts.mono,
     fontSize: 10,
     fontWeight: "900",
     letterSpacing: 1.5,
   },
-  pageTitle: { color: "#111111", fontSize: 30, fontWeight: "900" },
+  pageTitle: { color: Playbook.ink, fontFamily: Fonts.display, fontSize: 36, fontWeight: "900" },
   titleInput: {
-    color: "#111111",
+    color: Playbook.ink,
+    fontFamily: Fonts.display,
     fontSize: 29,
     fontWeight: "900",
     borderBottomWidth: 1,
-    borderBottomColor: "#bbbbbb",
+    borderBottomColor: Playbook.lineStrong,
     paddingVertical: 8,
   },
   input: {
     borderWidth: 1,
-    borderColor: "#cccccc",
-    borderRadius: 10,
-    backgroundColor: "#ffffff",
-    color: "#111111",
+    borderColor: Playbook.line,
+    borderRadius: 8,
+    backgroundColor: Playbook.paper,
+    color: Playbook.ink,
     fontSize: 14,
     paddingHorizontal: 12,
     paddingVertical: 11,
@@ -852,17 +855,18 @@ const styles = StyleSheet.create({
   primaryButton: {
     alignItems: "center",
     justifyContent: "center",
-    borderRadius: 11,
-    backgroundColor: "#111111",
+    borderRadius: 8,
+    backgroundColor: Playbook.ink,
     paddingHorizontal: 17,
     paddingVertical: 13,
   },
-  primaryButtonText: { color: "#ffffff", fontWeight: "900" },
+  primaryButtonText: { color: Playbook.paper, fontWeight: "900" },
   notice: {
     marginTop: 12,
-    borderRadius: 10,
-    backgroundColor: "#f1f1f1",
-    color: "#444444",
+    borderLeftWidth: 3,
+    borderLeftColor: Playbook.orange,
+    backgroundColor: Playbook.orangeSoft,
+    color: Playbook.inkSoft,
     padding: 12,
     fontSize: 13,
   },
@@ -874,71 +878,71 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
   sectionTitle: {
-    color: "#111111",
-    fontSize: 23,
+    color: Playbook.ink,
+    fontFamily: Fonts.display,
+    fontSize: 28,
     fontWeight: "900",
     marginTop: 5,
   },
-  count: { color: "#777777", fontSize: 12 },
+  count: { color: Playbook.muted, fontFamily: Fonts.mono, fontSize: 11 },
   sectionStack: { gap: 16 },
   sectionCard: {
     borderWidth: 1,
-    borderColor: "#d8d8d8",
-    borderRadius: 17,
+    borderColor: Playbook.line,
     padding: 16,
     gap: 13,
-    backgroundColor: "#ffffff",
+    backgroundColor: Playbook.paper,
   },
   addCard: {
     borderWidth: 1,
     borderStyle: "dashed",
-    borderColor: "#bbbbbb",
-    borderRadius: 17,
+    borderColor: Playbook.lineStrong,
     padding: 16,
     gap: 12,
   },
-  cardTitle: { color: "#111111", fontSize: 18, fontWeight: "900" },
+  cardTitle: { color: Playbook.ink, fontFamily: Fonts.display, fontSize: 22, fontWeight: "900" },
   orderRow: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
   },
-  orderLabel: { color: "#888888", fontSize: 12, fontWeight: "900" },
+  orderLabel: { color: Playbook.orange, fontFamily: Fonts.mono, fontSize: 10, fontWeight: "900" },
   orderButtons: { flexDirection: "row", gap: 6 },
   orderButton: {
     minWidth: 36,
     alignItems: "center",
     borderWidth: 1,
-    borderColor: "#bbbbbb",
-    borderRadius: 8,
+    borderColor: Playbook.lineStrong,
+    borderRadius: 6,
     paddingVertical: 6,
   },
-  orderButtonText: { color: "#111111", fontSize: 16, fontWeight: "900" },
+  orderButtonText: { color: Playbook.ink, fontSize: 16, fontWeight: "900" },
   disabledButton: { opacity: 0.25 },
   renameRow: { flexDirection: "row", alignItems: "center", gap: 8 },
   flexInput: { flex: 1 },
   smallButton: {
     alignItems: "center",
     justifyContent: "center",
-    borderRadius: 9,
-    backgroundColor: "#111111",
+    borderRadius: 7,
+    backgroundColor: Playbook.ink,
     paddingHorizontal: 13,
     paddingVertical: 11,
   },
-  smallButtonText: { color: "#ffffff", fontSize: 12, fontWeight: "900" },
+  smallButtonText: { color: Playbook.paper, fontSize: 12, fontWeight: "900" },
   itemStack: { gap: 10 },
   itemCard: {
-    borderRadius: 13,
-    backgroundColor: "#f3f3f3",
+    backgroundColor: Playbook.surface,
+    borderLeftWidth: 2,
+    borderLeftColor: Playbook.ink,
     padding: 13,
     gap: 10,
   },
-  itemNumber: { color: "#666666", fontSize: 12, fontWeight: "900" },
-  linkedMove: { color: "#333333", fontSize: 11, fontWeight: "800" },
+  itemNumber: { color: Playbook.orange, fontFamily: Fonts.mono, fontSize: 11, fontWeight: "900" },
+  linkedMove: { color: Playbook.inkSoft, fontSize: 11, fontWeight: "800" },
   instructionsInput: { minHeight: 64, textAlignVertical: "top" },
   volumeGrid: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
   numberField: { minWidth: 72, flexGrow: 1, gap: 5 },
-  fieldLabel: { color: "#666666", fontSize: 10, fontWeight: "800" },
+  fieldLabel: { color: Playbook.muted, fontFamily: Fonts.mono, fontSize: 9, fontWeight: "800" },
   numberInput: { textAlign: "center" },
   itemActions: {
     flexDirection: "row",
@@ -947,16 +951,16 @@ const styles = StyleSheet.create({
   },
   addArea: {
     borderTopWidth: 1,
-    borderTopColor: "#e2e2e2",
+    borderTopColor: Playbook.line,
     paddingTop: 14,
     gap: 10,
   },
-  subheading: { color: "#222222", fontSize: 14, fontWeight: "900" },
+  subheading: { color: Playbook.inkSoft, fontSize: 14, fontWeight: "900" },
   favoriteToggle: {
     alignItems: "center",
     borderWidth: 1,
-    borderColor: "#333333",
-    borderRadius: 10,
+    borderColor: Playbook.ink,
+    borderRadius: 8,
     padding: 11,
   },
   favoriteList: { gap: 8 },
@@ -964,30 +968,30 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 10,
-    borderRadius: 10,
-    backgroundColor: "#f3f3f3",
+    borderRadius: 8,
+    backgroundColor: Playbook.surface,
     padding: 11,
   },
   favoriteCopy: { flex: 1, gap: 3 },
-  favoriteTitle: { color: "#111111", fontSize: 13, fontWeight: "800" },
-  emptyText: { color: "#777777", fontSize: 13, paddingVertical: 8 },
-  muted: { color: "#777777", fontSize: 12 },
+  favoriteTitle: { color: Playbook.ink, fontSize: 13, fontWeight: "800" },
+  emptyText: { color: Playbook.muted, fontSize: 13, paddingVertical: 8 },
+  muted: { color: Playbook.muted, fontSize: 12 },
   secondaryButton: {
     alignItems: "center",
     borderWidth: 1,
-    borderColor: "#222222",
-    borderRadius: 10,
+    borderColor: Playbook.ink,
+    borderRadius: 8,
     padding: 12,
   },
-  secondaryButtonText: { color: "#222222", fontWeight: "800" },
+  secondaryButtonText: { color: Playbook.inkSoft, fontWeight: "800" },
   deleteLink: { paddingVertical: 8, paddingHorizontal: 4 },
   dangerButton: {
     alignItems: "center",
     borderWidth: 1,
-    borderColor: "#c8a0a0",
-    borderRadius: 12,
+    borderColor: "#E3BCAF",
+    borderRadius: 8,
     padding: 13,
     marginTop: 34,
   },
-  dangerText: { color: "#9b1c1c", fontSize: 12, fontWeight: "800" },
+  dangerText: { color: Playbook.danger, fontSize: 12, fontWeight: "800" },
 });

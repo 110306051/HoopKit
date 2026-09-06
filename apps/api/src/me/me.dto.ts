@@ -1,6 +1,7 @@
 import {
   ArrayMaxSize,
   ArrayUnique,
+  Equals,
   IsArray,
   IsInt,
   IsOptional,
@@ -10,6 +11,11 @@ import {
   MaxLength,
   Min,
 } from 'class-validator';
+
+export class DeleteAccountDto {
+  @Equals('DELETE')
+  confirmation!: 'DELETE';
+}
 
 export class UpdateProfileDto {
   @IsString()

@@ -18,20 +18,18 @@ export default async function PlayersPage() {
 
   return (
     <StudioShell email={session.email}>
-      <main className="mx-auto max-w-7xl px-5 py-8 lg:px-10 lg:py-12">
-        <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+      <main className="studio-page">
+        <div className="court-index flex flex-col justify-between gap-5 pt-7 sm:flex-row sm:items-end">
           <div>
-            <p className="text-xs font-bold tracking-[0.2em] text-[#758650]">PLAYERS</p>
-            <h1 className="mt-3 font-[var(--font-manrope)] text-4xl font-extrabold tracking-[-0.04em]">
-              球員管理
-            </h1>
-            <p className="mt-3 text-sm leading-7 text-[#697067]">
+            <p className="page-kicker">PLAYERS / ROSTER</p>
+            <h1 className="page-title">球員管理</h1>
+            <p className="mt-4 text-sm leading-7 text-[#696964]">
               建立、校對、發布或封存球員資料。封存不會刪除既有招式關聯。
             </p>
           </div>
           <Link
             href="/players/new"
-            className="inline-flex h-11 items-center justify-center rounded-full bg-[#111711] px-5 text-sm font-bold text-white hover:bg-[#293128]"
+            className="primary-action"
           >
             ＋ 新增球員
           </Link>
@@ -39,19 +37,19 @@ export default async function PlayersPage() {
 
         {result.ok ? (
           result.data.length ? (
-            <div className="mt-9 overflow-hidden rounded-2xl border border-[#d8d6cd] bg-[#fbfaf6]">
-              <div className="hidden grid-cols-[minmax(240px,1.5fr)_1fr_120px_150px_80px] gap-4 border-b border-[#dedcd4] bg-[#eeece5] px-5 py-3 text-xs font-bold text-[#747c72] md:grid">
+            <div className="mt-9 overflow-hidden border border-[#d7d7d0] bg-white">
+              <div className="utility-type hidden grid-cols-[minmax(240px,1.5fr)_1fr_120px_150px_80px] gap-4 border-b border-[#d7d7d0] bg-[#eeeeea] px-5 py-3 text-[10px] font-bold tracking-[0.08em] text-[#696964] md:grid">
                 <span>球員</span>
                 <span>隊伍／位置</span>
                 <span>狀態</span>
                 <span>最後更新</span>
                 <span />
               </div>
-              <div className="divide-y divide-[#e2e0d8]">
+              <div className="divide-y divide-[#d7d7d0]">
                 {result.data.map((player) => (
                   <article
                     key={player.id}
-                    className="grid gap-4 px-5 py-5 transition hover:bg-[#f5f4ef] md:grid-cols-[minmax(240px,1.5fr)_1fr_120px_150px_80px] md:items-center"
+                    className="grid gap-4 px-5 py-5 transition hover:bg-[#f5f5f2] md:grid-cols-[minmax(240px,1.5fr)_1fr_120px_150px_80px] md:items-center"
                   >
                     <div className="flex min-w-0 items-center gap-3">
                       {player.avatarPath ? (
@@ -61,7 +59,7 @@ export default async function PlayersPage() {
                           className="size-12 rounded-xl object-cover"
                         />
                       ) : (
-                        <span className="court-grid grid size-12 shrink-0 place-items-center rounded-xl bg-[#111711] text-sm font-black text-[#bff54a]">
+                        <span className="grid size-12 shrink-0 place-items-center rounded-md bg-[#121212] text-sm font-black text-[#f05a28]">
                           {player.fullName.slice(0, 2).toUpperCase()}
                         </span>
                       )}
@@ -79,7 +77,7 @@ export default async function PlayersPage() {
                     <p className="text-xs text-[#7b8379]">{formatDate(player.updatedAt)}</p>
                     <Link
                       href={`/players/${player.id}/edit`}
-                      className="text-sm font-bold text-[#536d1c] hover:underline"
+                      className="text-sm font-bold text-[#c94b22] hover:underline"
                     >
                       編輯
                     </Link>

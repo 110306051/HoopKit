@@ -5,11 +5,12 @@ import {
   Text,
   View,
 } from "react-native";
+import { Fonts, Playbook } from "@/constants/theme";
 
 export function LoadingState({ label = "載入訓練內容…" }: { label?: string }) {
   return (
     <View style={styles.container}>
-      <ActivityIndicator color="#111111" size="large" />
+      <ActivityIndicator color={Playbook.orange} size="large" />
       <Text style={styles.text}>{label}</Text>
     </View>
   );
@@ -51,18 +52,19 @@ const styles = StyleSheet.create({
     padding: 28,
   },
   title: {
-    color: "#111111",
+    color: Playbook.ink,
+    fontFamily: Fonts.display,
     fontSize: 20,
     fontWeight: "800",
     textAlign: "center",
   },
-  text: { color: "#666666", fontSize: 14, lineHeight: 21, textAlign: "center" },
+  text: { color: Playbook.muted, fontSize: 14, lineHeight: 21, textAlign: "center" },
   button: {
     marginTop: 4,
-    borderRadius: 14,
-    backgroundColor: "#111111",
+    borderRadius: 8,
+    backgroundColor: Playbook.ink,
     paddingHorizontal: 20,
     paddingVertical: 12,
   },
-  buttonText: { color: "#ffffff", fontWeight: "800" },
+  buttonText: { color: Playbook.paper, fontWeight: "800" },
 });

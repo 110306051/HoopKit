@@ -23,7 +23,7 @@ export default async function MovesPage() {
   );
   return (
     <StudioShell email={session.email}>
-      <main className="mx-auto max-w-7xl px-5 py-8 lg:px-10 lg:py-12">
+      <main className="studio-page">
         <EditorialListHeader
           eyebrow="MOVES"
           title="招式管理"
@@ -33,12 +33,12 @@ export default async function MovesPage() {
         />
         {result.ok ? (
           result.data.length ? (
-            <div className="mt-9 overflow-hidden rounded-2xl border border-[#d8d6cd] bg-[#fbfaf6]">
-              <div className="divide-y divide-[#e2e0d8]">
+            <div className="mt-9 overflow-hidden border border-[#d7d7d0] bg-white">
+              <div className="divide-y divide-[#d7d7d0]">
                 {result.data.map((move) => (
                   <article
                     key={move.id}
-                    className="grid gap-4 px-5 py-5 hover:bg-[#f5f4ef] md:grid-cols-[minmax(220px,1.5fr)_120px_120px_150px_80px] md:items-center"
+                    className="grid gap-4 px-5 py-5 transition hover:bg-[#f5f5f2] md:grid-cols-[minmax(220px,1.5fr)_120px_120px_150px_80px] md:items-center"
                   >
                     <div>
                       <p className="font-bold">{move.name}</p>
@@ -55,7 +55,7 @@ export default async function MovesPage() {
                     </p>
                     <Link
                       href={`/moves/${move.id}/edit`}
-                      className="text-sm font-bold text-[#536d1c] hover:underline"
+                      className="text-sm font-bold text-[#c94b22] hover:underline"
                     >
                       編輯
                     </Link>

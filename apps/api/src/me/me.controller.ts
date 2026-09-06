@@ -17,6 +17,7 @@ import {
   CloneTemplateDto,
   CreatePlanDto,
   CreatePlanItemDto,
+  DeleteAccountDto,
   ReorderIdsDto,
   SaveSectionDto,
   UpdatePlanDto,
@@ -24,11 +25,15 @@ import {
   UpdateProfileDto,
 } from './me.dto';
 import { MeService } from './me.service';
+import { AccountService } from './account.service';
 
 @Controller('me')
 @UseGuards(AuthGuard)
 export class MeController {
-  constructor(private readonly meService: MeService) {}
+  constructor(
+    private readonly meService: MeService,
+    private readonly accountService: AccountService,
+  ) {}
 
   @Get()
   overview(@CurrentUser() user: AuthUser) {
@@ -38,6 +43,12 @@ export class MeController {
   @Patch('profile')
   updateProfile(@CurrentUser() user: AuthUser, @Body() body: UpdateProfileDto) {
     return this.meService.updateProfile(user.id, body);
+  }
+
+  @Delete('account')
+  deleteAccount(@CurrentUser() user: AuthUser, @Body() body: DeleteAccountDto) {
+    void body;
+    return this.accountService.deleteAccount(user.id);
   }
 
   @Put('favorite-moves/:moveId')

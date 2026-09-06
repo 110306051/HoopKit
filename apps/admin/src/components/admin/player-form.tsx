@@ -156,8 +156,8 @@ export function PlayerForm({ player }: PlayerFormProps) {
   }
 
   return (
-    <form onSubmit={submit} className="grid gap-6 xl:grid-cols-[1fr_340px]">
-      <div className="space-y-6">
+    <form onSubmit={submit} className="editor-form grid gap-5 xl:grid-cols-[1fr_340px]">
+      <div className="space-y-5">
         <FormSection
           title="基本資料"
           description="建立內容識別、顯示名稱與球員背景。"
@@ -244,7 +244,7 @@ export function PlayerForm({ player }: PlayerFormProps) {
           title="圖片與發布"
           description="可從電腦上傳至 Supabase Storage，或直接使用既有的公開圖片 URL。"
         >
-          <div className="rounded-xl border border-[#d8d6cd] bg-white p-4">
+          <div className="border-l-2 border-[#121212] bg-[#f8f8f6] p-4">
             <p className="text-sm font-bold text-[#30392f]">從電腦上傳頭像</p>
             <p className="mt-1 text-xs leading-5 text-[#858c83]">
               支援 JPG、PNG、WebP、GIF，最大 10
@@ -259,13 +259,13 @@ export function PlayerForm({ player }: PlayerFormProps) {
                 onChange={(event) =>
                   selectAvatar(event.target.files?.[0] ?? null)
                 }
-                className="min-w-0 flex-1 text-sm file:mr-4 file:rounded-xl file:border-0 file:bg-[#e8f5c9] file:px-4 file:py-3 file:font-bold"
+                className="min-w-0 flex-1 text-sm file:mr-4 file:rounded-md file:border file:border-[#d7d7d0] file:bg-white file:px-4 file:py-3 file:font-bold"
               />
               <button
                 type="button"
                 disabled={!avatarFile || avatarUpload.busy}
                 onClick={() => void uploadAvatar()}
-                className="h-11 shrink-0 rounded-xl bg-[#111711] px-5 text-sm font-bold text-white disabled:cursor-not-allowed disabled:opacity-45"
+                className="primary-action shrink-0 disabled:cursor-not-allowed disabled:opacity-45"
               >
                 {avatarUpload.busy ? "上傳中…" : "上傳並使用"}
               </button>
@@ -273,7 +273,7 @@ export function PlayerForm({ player }: PlayerFormProps) {
             {avatarUpload.progress > 0 ? (
               <div className="mt-4 h-2 overflow-hidden rounded-full bg-[#e3e1d9]">
                 <div
-                  className="h-full rounded-full bg-[#8cc61b] transition-[width]"
+                  className="h-full rounded-full bg-[#f05a28] transition-[width]"
                   style={{ width: `${avatarUpload.progress}%` }}
                 />
               </div>
@@ -319,11 +319,11 @@ export function PlayerForm({ player }: PlayerFormProps) {
       </div>
 
       <aside className="space-y-5 xl:sticky xl:top-8 xl:self-start">
-        <div className="rounded-2xl border border-[#d8d6cd] bg-[#fbfaf6] p-5">
-          <p className="text-xs font-bold tracking-[0.14em] text-[#758650]">
+        <div className="border border-[#d7d7d0] bg-white p-5">
+          <p className="page-kicker">
             PREVIEW
           </p>
-          <div className="mt-4 overflow-hidden rounded-2xl bg-[#111711]">
+          <div className="mt-4 overflow-hidden bg-[#121212]">
             {avatarPreview || avatarPath ? (
               <img
                 src={avatarPreview ?? avatarPath}
@@ -331,7 +331,7 @@ export function PlayerForm({ player }: PlayerFormProps) {
                 className="aspect-square w-full object-cover"
               />
             ) : (
-              <div className="court-grid grid aspect-square place-items-center font-[var(--font-manrope)] text-6xl font-black text-[#bff54a]">
+              <div className="court-grid display-type grid aspect-square place-items-center text-6xl font-black text-[#f05a28]">
                 {initials}
               </div>
             )}
@@ -350,7 +350,7 @@ export function PlayerForm({ player }: PlayerFormProps) {
 
         {error ? (
           <div
-            className="rounded-xl border border-[#efb39e] bg-[#fff1eb] p-4 text-sm text-[#9f3c1a]"
+            className="border-l-4 border-[#f05a28] bg-[#fff0e9] p-4 text-sm text-[#873719]"
             role="alert"
           >
             {error}
@@ -360,14 +360,14 @@ export function PlayerForm({ player }: PlayerFormProps) {
         <button
           type="submit"
           disabled={isSubmitting || avatarUpload.busy}
-          className="h-13 w-full rounded-xl bg-[#111711] px-5 font-bold text-white transition hover:bg-[#293128] disabled:cursor-wait disabled:opacity-55"
+          className="primary-action w-full disabled:cursor-wait disabled:opacity-55"
         >
           {isSubmitting ? "儲存中…" : player ? "儲存球員" : "建立球員"}
         </button>
         <button
           type="button"
           onClick={() => router.back()}
-          className="h-11 w-full rounded-xl border border-[#d8d6cd] bg-white text-sm font-bold"
+          className="secondary-action w-full"
         >
           取消
         </button>
@@ -386,9 +386,9 @@ function FormSection({
   children: React.ReactNode;
 }) {
   return (
-    <section className="rounded-2xl border border-[#d8d6cd] bg-[#fbfaf6] p-6 lg:p-8">
-      <h2 className="text-xl font-extrabold">{title}</h2>
-      <p className="mt-1 text-sm text-[#737b71]">{description}</p>
+    <section className="border border-[#d7d7d0] bg-white p-6 lg:p-8">
+      <h2 className="display-type text-2xl font-black">{title}</h2>
+      <p className="mt-2 text-sm text-[#696964]">{description}</p>
       <div className="mt-7 space-y-5">{children}</div>
     </section>
   );
@@ -407,8 +407,8 @@ function Field({
 }) {
   return (
     <label className="block">
-      <span className="mb-2 block text-sm font-bold text-[#30392f]">
-        {label} {required ? <span className="text-[#d85a2c]">*</span> : null}
+      <span className="mb-2 block text-sm font-bold text-[#30302d]">
+        {label} {required ? <span className="text-[#f05a28]">*</span> : null}
       </span>
       {children}
       {hint ? (

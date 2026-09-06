@@ -8,115 +8,108 @@ import type { DashboardData } from "@/types/admin";
 export const metadata: Metadata = { title: "總覽" };
 export const dynamic = "force-dynamic";
 
-const metricCards = [
-  { key: "players", label: "球員", note: "球星與示範球員資料", accent: "#bff54a" },
-  { key: "moves", label: "招式", note: "動作拆解與使用時機", accent: "#ff8a55" },
-  {
-    key: "workoutTemplates",
-    label: "公開菜單",
-    note: "可匯入的訓練模板",
-    accent: "#8cd1ff",
-  },
-  { key: "mediaAssets", label: "影片資產", note: "Mux／影片處理狀態", accent: "#d7b5ff" },
+const metrics = [
+  { key: "players", label: "球員", code: "PLAYER", href: "/players" },
+  { key: "moves", label: "招式", code: "MOVE", href: "/moves" },
+  { key: "workoutTemplates", label: "公開菜單", code: "WORKOUT", href: "/workouts" },
+  { key: "mediaAssets", label: "媒體資產", code: "MEDIA", href: "/media" },
 ] as const;
 
 export default async function DashboardPage() {
   const session = await requireAdminSession();
-  const result = await adminApiRequest<DashboardData>(
-    "/admin/dashboard",
-    session.accessToken,
-  );
+  const result = await adminApiRequest<DashboardData>("/admin/dashboard", session.accessToken);
   const email = result.ok ? result.data.user.email ?? session.email : session.email;
   const role = result.ok ? result.data.user.role : undefined;
 
   return (
     <StudioShell email={email} role={role}>
-      <main className="mx-auto max-w-7xl px-5 py-8 lg:px-10 lg:py-12">
-        <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
-          <div>
-            <p className="text-xs font-bold tracking-[0.2em] text-[#758650]">DASHBOARD</p>
-            <h1 className="mt-3 font-[var(--font-manrope)] text-4xl font-extrabold tracking-[-0.04em] sm:text-5xl">
-              內容營運總覽
-            </h1>
-            <p className="mt-4 max-w-2xl text-[15px] leading-7 text-[#697067]">
-              查看內容數量與服務狀態，再進入內容資料庫檢視完整文字、菜單階層和媒體欄位。
-            </p>
+      <main className="studio-page">
+        <header className="court-index pt-7">
+          <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
+            <div>
+              <p className="page-kicker">COURT INDEX / 00</p>
+              <h1 className="page-title">內容戰術板</h1>
+              <p className="mt-4 max-w-2xl text-sm leading-7 text-[#696964]">
+                從素材到發布，一眼掌握球員、招式、訓練菜單與影片的內容進度。
+              </p>
+            </div>
+            <div className="utility-type flex items-center gap-2 border-l-2 border-[#121212] bg-white px-4 py-3 text-[11px] font-bold">
+              <span className={`size-2 rounded-full ${result.ok ? "bg-[#277a48]" : "bg-[#f05a28]"}`} />
+              {result.ok ? "SYSTEM READY" : "ACTION REQUIRED"}
+            </div>
           </div>
-
-          <div className="flex items-center gap-2 rounded-full border border-[#d8d6cd] bg-[#fbfaf6] px-4 py-2 text-sm">
-            <span className={`size-2 rounded-full ${result.ok ? "bg-[#7fbd00]" : "bg-[#ff6b35]"}`} />
-            {result.ok ? "Dashboard 資料查詢正常" : "需要處理設定"}
-          </div>
-        </div>
+        </header>
 
         {!result.ok ? (
-          <section className="mt-9 rounded-2xl border border-[#efb39e] bg-[#fff3ed] p-5">
-            <p className="font-bold text-[#8f3517]">尚未取得管理資料</p>
-            <p className="mt-2 text-sm leading-6 text-[#a05235]">{result.message}</p>
+          <section className="mt-8 border-l-4 border-[#f05a28] bg-[#fff0e9] p-5">
+            <p className="font-bold text-[#873719]">管理資料尚未載入</p>
+            <p className="mt-2 text-sm leading-6 text-[#9c5035]">{result.message}</p>
           </section>
         ) : null}
 
-        <section className="mt-10 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          {metricCards.map((card) => (
-            <article
-              key={card.key}
-              className="relative overflow-hidden rounded-2xl border border-[#d8d6cd] bg-[#fbfaf6] p-6"
-            >
-              <span
-                className="absolute right-5 top-5 size-3 rounded-full"
-                style={{ backgroundColor: card.accent }}
-              />
-              <p className="text-sm font-semibold text-[#697067]">{card.label}</p>
-              <p className="mt-4 font-[var(--font-manrope)] text-5xl font-extrabold tracking-[-0.05em]">
-                {result.ok ? result.data.metrics[card.key] : "—"}
+        <section className="mt-10 grid border-l border-t border-[#d7d7d0] sm:grid-cols-2 xl:grid-cols-4" aria-label="內容數量">
+          {metrics.map((metric, index) => (
+            <Link key={metric.key} href={metric.href} className="group relative min-h-44 border-b border-r border-[#d7d7d0] bg-white p-5 transition hover:bg-[#121212] hover:text-white">
+              <div className="flex items-start justify-between">
+                <span className="utility-type text-[10px] font-bold tracking-[0.14em] text-[#85857f] group-hover:text-white/55">{metric.code}</span>
+                <span className="utility-type text-[10px] text-[#a2a29c]">0{index + 1}</span>
+              </div>
+              <p className="display-type mt-5 text-6xl font-black leading-none tracking-[-0.04em]">
+                {result.ok ? result.data.metrics[metric.key] : "—"}
               </p>
-              <p className="mt-5 border-t border-[#e2e0d8] pt-4 text-xs leading-5 text-[#848b82]">
-                {card.note}
-              </p>
-            </article>
+              <div className="mt-5 flex items-center justify-between border-t border-[#d7d7d0] pt-3 group-hover:border-white/20">
+                <span className="text-sm font-bold">{metric.label}</span>
+                <span className="text-[#f05a28]">→</span>
+              </div>
+            </Link>
           ))}
         </section>
 
-        <section className="mt-6 grid gap-6 lg:grid-cols-[1.35fr_1fr]">
-          <article className="court-grid overflow-hidden rounded-2xl bg-[#111711] p-7 text-white sm:p-9">
-            <p className="text-xs font-bold tracking-[0.2em] text-[#bff54a]">CONTENT LIBRARY</p>
-            <h2 className="mt-4 max-w-xl font-[var(--font-manrope)] text-3xl font-extrabold tracking-[-0.035em]">
-              查看資料庫裡真正的文字、圖片、影片與菜單內容。
-            </h2>
-            <p className="mt-4 max-w-xl text-sm leading-7 text-white/60">
-              內容資料庫會組合球員、招式步驟、標籤、Highlight Clip、公開訓練模板與媒體資產。
-            </p>
-            <Link
-              href="/library"
-              className="mt-8 inline-flex rounded-full bg-[#bff54a] px-5 py-3 text-sm font-extrabold text-[#111711]"
-            >
-              開啟內容資料庫 →
-            </Link>
+        <section className="mt-8 grid gap-6 xl:grid-cols-[1.45fr_.75fr]">
+          <article className="relative min-h-80 overflow-hidden bg-[#121212] p-7 text-white sm:p-10">
+            <div className="court-grid absolute inset-0" />
+            <div className="absolute -bottom-32 -right-20 size-80 rounded-full border border-white/15" />
+            <div className="absolute -bottom-16 right-12 size-44 rounded-full border border-[#f05a28]/70" />
+            <div className="relative flex h-full max-w-2xl flex-col justify-between">
+              <div>
+                <p className="utility-type text-[10px] font-bold tracking-[0.16em] text-[#f05a28]">TODAY&apos;S PLAY</p>
+                <h2 className="display-type mt-4 text-4xl font-black leading-[.98] tracking-[-0.025em] sm:text-5xl">
+                  把球場上的細節，<br />整理成下一次可執行的訓練。
+                </h2>
+                <p className="mt-5 max-w-xl text-sm leading-7 text-white/60">
+                  在內容預覽中交叉檢查球員、動作步驟、Highlight 片段與公開菜單的最終呈現。
+                </p>
+              </div>
+              <Link href="/library" className="mt-8 inline-flex w-fit items-center gap-5 border-b border-[#f05a28] pb-2 text-sm font-bold">
+                開啟內容預覽 <span className="text-[#f05a28]">↗</span>
+              </Link>
+            </div>
           </article>
 
-          <article className="rounded-2xl border border-[#d8d6cd] bg-[#fbfaf6] p-7">
-            <p className="text-xs font-bold tracking-[0.18em] text-[#758650]">FIRST WORKFLOW</p>
-            <h2 className="mt-3 text-2xl font-extrabold">球員內容管理</h2>
-            <p className="mt-3 text-sm leading-7 text-[#697067]">
-              第一條可寫入工作流已完成：新增、編輯、發布與封存球員。
+          <article className="panel flex flex-col p-7">
+            <p className="page-kicker">QUICK START</p>
+            <h2 className="display-type mt-3 text-3xl font-black">建立下一筆內容</h2>
+            <p className="mt-3 text-sm leading-7 text-[#696964]">
+              先建立核心資料，再綁定媒體與發布狀態。
             </p>
-            <div className="mt-6 grid gap-3">
-              <Link
-                href="/players"
-                className="rounded-xl border border-[#d8d6cd] bg-white px-4 py-3 text-sm font-bold hover:border-[#9ba497]"
-              >
-                管理現有球員 →
-              </Link>
-              <Link
-                href="/players/new"
-                className="rounded-xl bg-[#111711] px-4 py-3 text-sm font-bold text-white"
-              >
-                ＋ 建立新球員
-              </Link>
+            <div className="mt-7 grid gap-2">
+              <QuickLink href="/players/new" label="新增球員" code="P" />
+              <QuickLink href="/moves/new" label="新增招式" code="M" />
+              <QuickLink href="/workouts/new" label="新增訓練菜單" code="W" />
+              <QuickLink href="/media" label="上傳媒體" code="A" />
             </div>
           </article>
         </section>
       </main>
     </StudioShell>
+  );
+}
+
+function QuickLink({ href, label, code }: { href: string; label: string; code: string }) {
+  return (
+    <Link href={href} className="group flex items-center justify-between border-b border-[#d7d7d0] py-3 text-sm font-bold">
+      <span className="flex items-center gap-3"><span className="utility-type grid size-7 place-items-center bg-[#eeeeea] text-[10px] group-hover:bg-[#f05a28] group-hover:text-white">{code}</span>{label}</span>
+      <span className="transition group-hover:translate-x-1">→</span>
+    </Link>
   );
 }

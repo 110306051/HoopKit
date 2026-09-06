@@ -29,14 +29,10 @@ export default async function EditWorkoutPage({
   if (!workout.ok && workout.status === 404) notFound();
   return (
     <StudioShell email={session.email}>
-      <main className="mx-auto max-w-6xl px-5 py-8 lg:px-10 lg:py-12">
-        <p className="text-xs font-bold tracking-[0.2em] text-[#758650]">
-          EDIT WORKOUT
-        </p>
-        <h1 className="mt-3 text-4xl font-extrabold tracking-[-0.04em]">
-          編輯公開訓練菜單
-        </h1>
-        <p className="mb-9 mt-3 text-sm leading-7 text-[#697067]">
+      <main className="studio-page max-w-6xl">
+        <p className="court-index page-kicker pt-7">WORKOUTS / EDIT</p>
+        <h1 className="page-title">編輯公開訓練菜單</h1>
+        <p className="mb-9 mt-4 text-sm leading-7 text-[#696964]">
           維護來源球員、菜單區段、訓練項目與發布狀態。
         </p>
         {workout.ok && options.ok ? (

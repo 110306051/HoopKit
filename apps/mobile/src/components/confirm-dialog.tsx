@@ -6,6 +6,7 @@ import {
   Text,
   View,
 } from "react-native";
+import { Fonts, Playbook } from "@/constants/theme";
 
 type ConfirmDialogProps = {
   visible: boolean;
@@ -83,7 +84,7 @@ export function ConfirmDialog({
               ]}
             >
               {busy ? (
-                <ActivityIndicator color="#ffffff" size="small" />
+                <ActivityIndicator color={Playbook.paper} size="small" />
               ) : (
                 <Text style={styles.confirmText}>{confirmLabel}</Text>
               )}
@@ -106,8 +107,8 @@ const styles = StyleSheet.create({
   dialog: {
     width: "100%",
     maxWidth: 420,
-    borderRadius: 18,
-    backgroundColor: "#ffffff",
+    borderRadius: 10,
+    backgroundColor: Playbook.paper,
     padding: 20,
     gap: 12,
     shadowColor: "#000000",
@@ -116,22 +117,22 @@ const styles = StyleSheet.create({
     shadowRadius: 28,
     elevation: 12,
   },
-  title: { color: "#111111", fontSize: 20, fontWeight: "900" },
-  description: { color: "#555555", fontSize: 14, lineHeight: 21 },
-  error: { color: "#9b1c1c", fontSize: 13, lineHeight: 19 },
+  title: { color: Playbook.ink, fontFamily: Fonts.display, fontSize: 24, fontWeight: "900" },
+  description: { color: Playbook.muted, fontSize: 14, lineHeight: 21 },
+  error: { color: Playbook.danger, fontSize: 13, lineHeight: 19 },
   actions: { flexDirection: "row", gap: 10, marginTop: 6 },
   button: {
     flex: 1,
     minHeight: 46,
     alignItems: "center",
     justifyContent: "center",
-    borderRadius: 11,
+    borderRadius: 8,
     paddingHorizontal: 14,
   },
-  cancelButton: { borderWidth: 1, borderColor: "#cccccc" },
-  confirmButton: { backgroundColor: "#111111" },
-  dangerButton: { backgroundColor: "#9b1c1c" },
-  cancelText: { color: "#222222", fontWeight: "800" },
-  confirmText: { color: "#ffffff", fontWeight: "900" },
+  cancelButton: { borderWidth: 1, borderColor: Playbook.line },
+  confirmButton: { backgroundColor: Playbook.ink },
+  dangerButton: { backgroundColor: Playbook.danger },
+  cancelText: { color: Playbook.inkSoft, fontWeight: "800" },
+  confirmText: { color: Playbook.paper, fontWeight: "900" },
   disabled: { opacity: 0.55 },
 });

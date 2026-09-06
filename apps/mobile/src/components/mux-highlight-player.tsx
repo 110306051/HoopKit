@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View } from "react-native";
 import { useVideoPlayer, VideoView } from "expo-video";
 import type { HighlightClip } from "@/types/content";
+import { Fonts, Playbook } from "@/constants/theme";
 
 export function MuxHighlightPlayer({ clip }: { clip: HighlightClip }) {
   const player = useVideoPlayer(
@@ -39,13 +40,12 @@ function formatTime(seconds: number) {
 const styles = StyleSheet.create({
   card: {
     overflow: "hidden",
-    borderRadius: 20,
-    backgroundColor: "#181e18",
+    backgroundColor: Playbook.film,
     borderWidth: 1,
-    borderColor: "#2c352b",
+    borderColor: "#27282D",
   },
   video: { width: "100%", aspectRatio: 16 / 9, backgroundColor: "#000" },
   meta: { padding: 14, gap: 4 },
-  title: { color: "#fff", fontSize: 16, fontWeight: "800" },
-  time: { color: "#9ba598", fontSize: 12 },
+  title: { color: Playbook.paper, fontFamily: Fonts.display, fontSize: 20, fontWeight: "900" },
+  time: { color: "#FFFFFF73", fontFamily: Fonts.mono, fontSize: 10 },
 });

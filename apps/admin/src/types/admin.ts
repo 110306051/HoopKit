@@ -215,3 +215,19 @@ export type WorkoutEditor = {
   updatedAt: string;
   sections: WorkoutEditorSection[];
 };
+export type ContentReport = {
+  id: string;
+  reporterUserId: string | null;
+  targetType: "user_clip" | "move" | "workout_template";
+  targetId: string;
+  targetOwnerUserId: string | null;
+  targetLabel: string;
+  reason: "inappropriate" | "copyright" | "misleading" | "safety" | "other";
+  details: string;
+  status: "pending" | "reviewing" | "resolved" | "dismissed";
+  reviewedBy: string | null;
+  reviewedAt: string | null;
+  resolutionNotes: string;
+  createdAt: string;
+  updatedAt: string;
+};

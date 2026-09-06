@@ -4,6 +4,8 @@ import type {
   PersonalPlanDetail,
   PersonalPlanItem,
   PersonalPlanSection,
+  UserClipList,
+  UserClipOptions,
 } from "@/types/member";
 
 const authHeaders = (accessToken: string) => ({
@@ -15,6 +17,37 @@ export function getMemberOverview(accessToken: string, signal?: AbortSignal) {
     signal,
     headers: authHeaders(accessToken),
   });
+}
+
+export function deleteAccount(accessToken: string) {
+  return apiRequest<{ deleted: true }>("/me/account", {
+    method: "DELETE",
+    body: JSON.stringify({ confirmation: "DELETE" }),
+    headers: authHeaders(accessToken),
+  });
+}
+
+export type ReportTargetType = "user_clip" | "move" | "workout_template";
+export type ReportReason =
+  "inappropriate" | "copyright" | "misleading" | "safety" | "other";
+
+export function createContentReport(
+  accessToken: string,
+  input: {
+    targetType: ReportTargetType;
+    targetId: string;
+    reason: ReportReason;
+    details?: string;
+  },
+) {
+  return apiRequest<{ id: string; status: string; createdAt: string }>(
+    "/me/reports",
+    {
+      method: "POST",
+      body: JSON.stringify(input),
+      headers: authHeaders(accessToken),
+    },
+  );
 }
 
 export function favoriteMove(accessToken: string, moveId: string) {
@@ -215,4 +248,49 @@ export function reorderPlanItems(
       headers: authHeaders(accessToken),
     },
   );
+}
+
+export function getUserClips(accessToken: string, signal?: AbortSignal) {
+  return apiRequest<UserClipList>("/me/clips", {
+    signal,
+    headers: authHeaders(accessToken),
+  });
+}
+
+export function getUserClipOptions(accessToken: string, signal?: AbortSignal) {
+  return apiRequest<UserClipOptions>("/me/clips/options", {
+    signal,
+    headers: authHeaders(accessToken),
+  });
+}
+
+export type CreateUserClipUploadInput = {
+  title: string;
+  description?: string;
+  playerIds: string[];
+  tags: string[];
+  fileName: string;
+  contentType: string;
+  fileSize: number;
+};
+
+export function createUserClipUpload(
+  accessToken: string,
+  input: CreateUserClipUploadInput,
+) {
+  return apiRequest<{ clipId: string; uploadId: string; uploadUrl: string }>(
+    "/me/clips/upload-url",
+    {
+      method: "POST",
+      body: JSON.stringify(input),
+      headers: authHeaders(accessToken),
+    },
+  );
+}
+
+export function deleteUserClip(accessToken: string, clipId: string) {
+  return apiRequest<{ deleted: true }>(`/me/clips/${clipId}`, {
+    method: "DELETE",
+    headers: authHeaders(accessToken),
+  });
 }

@@ -1,12 +1,23 @@
 import { DefaultTheme, Stack, ThemeProvider } from "expo-router";
+import * as Sentry from "@sentry/react-native";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { AnimatedSplashOverlay } from "@/components/animated-icon";
+import { Fonts, Playbook } from "@/constants/theme";
 import { SessionProvider } from "@/providers/session-provider";
 
 SplashScreen.preventAutoHideAsync();
 
-export default function RootLayout() {
+const sentryDsn = process.env.EXPO_PUBLIC_SENTRY_DSN?.trim();
+
+Sentry.init({
+  dsn: sentryDsn,
+  enabled: Boolean(sentryDsn),
+  environment: __DEV__ ? "development" : "production",
+  tracesSampleRate: 0.1,
+});
+
+function RootLayout() {
   return (
     <SessionProvider>
       <ThemeProvider value={DefaultTheme}>
@@ -14,11 +25,16 @@ export default function RootLayout() {
         <AnimatedSplashOverlay />
         <Stack
           screenOptions={{
-            headerStyle: { backgroundColor: "#ffffff" },
-            headerTintColor: "#111111",
+            headerStyle: { backgroundColor: Playbook.paper },
+            headerTintColor: Playbook.ink,
             headerShadowVisible: false,
-            headerTitleStyle: { fontWeight: "800" },
-            contentStyle: { backgroundColor: "#ffffff" },
+            headerTitleStyle: {
+              fontFamily: Fonts.display,
+              fontSize: 20,
+              fontWeight: "900",
+            },
+            headerBackButtonDisplayMode: "minimal",
+            contentStyle: { backgroundColor: Playbook.canvas },
           }}
         >
           <Stack.Screen name="index" options={{ headerShown: false }} />
@@ -33,6 +49,12 @@ export default function RootLayout() {
           />
           <Stack.Screen name="account" options={{ title: "我的 HoopKit" }} />
           <Stack.Screen
+            name="legal/privacy"
+            options={{ title: "隱私權政策" }}
+          />
+          <Stack.Screen name="legal/terms" options={{ title: "服務條款" }} />
+          <Stack.Screen name="my-clips/index" options={{ title: "我的片段" }} />
+          <Stack.Screen
             name="my-plans/[id]"
             options={{ title: "編輯個人菜單" }}
           />
@@ -46,3 +68,5 @@ export default function RootLayout() {
     </SessionProvider>
   );
 }
+
+export default Sentry.wrap(RootLayout);

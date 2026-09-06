@@ -1,9 +1,9 @@
 import type { ContentStatus } from "@/types/admin";
 
 const styles: Record<ContentStatus, string> = {
-  published: "border-[#b8dc69] bg-[#effbd4] text-[#496b08]",
-  draft: "border-[#c9c7be] bg-[#f1f0eb] text-[#646b62]",
-  archived: "border-[#efb39e] bg-[#fff0e9] text-[#9f3c1a]",
+  published: "border-[#bad8c5] bg-[#e9f4ed] text-[#1f653b]",
+  draft: "border-[#d7d7d0] bg-[#eeeeea] text-[#595954]",
+  archived: "border-[#efc6b7] bg-[#fff0e9] text-[#9c3f20]",
 };
 
 const labels: Record<ContentStatus, string> = {
@@ -15,7 +15,7 @@ const labels: Record<ContentStatus, string> = {
 export function StatusBadge({ status }: { status: ContentStatus }) {
   return (
     <span
-      className={`inline-flex rounded-full border px-2.5 py-1 text-[11px] font-bold ${styles[status]}`}
+      className={`utility-type inline-flex rounded-md border px-2 py-1 text-[10px] font-bold uppercase tracking-[0.06em] ${styles[status]}`}
     >
       {labels[status]}
     </span>

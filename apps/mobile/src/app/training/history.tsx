@@ -12,6 +12,8 @@ import { useRefreshOnFocus } from "@/hooks/use-refresh-on-focus";
 import { listWorkoutSessions } from "@/lib/training-api";
 import { useSession } from "@/providers/session-provider";
 import type { WorkoutSessionStatus } from "@/types/member";
+import { CourtIndex } from "@/components/playbook-ui";
+import { Fonts, Playbook } from "@/constants/theme";
 
 export default function TrainingHistoryScreen() {
   const { session, loading: sessionLoading } = useSession();
@@ -33,11 +35,11 @@ export default function TrainingHistoryScreen() {
   return (
     <SafeAreaView edges={["bottom"]} style={styles.screen}>
       <ScrollView contentContainerStyle={styles.content}>
-        <Text style={styles.eyebrow}>TRAINING HISTORY</Text>
-        <Text style={styles.title}>你的訓練紀錄</Text>
-        <Text style={styles.lead}>
-          進行中的訓練可以繼續；完成與中止的訓練會保留當時菜單快照。
-        </Text>
+        <CourtIndex
+          eyebrow="TRAINING LOG"
+          title="你的訓練紀錄"
+          description="進行中的訓練可以繼續；完成與中止的訓練會保留當時菜單快照。"
+        />
         {data?.items.length ? (
           <View style={styles.list}>
             {data.items.map((item) => (
@@ -91,7 +93,7 @@ function formatDuration(seconds: number) {
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: "#ffffff" },
+  screen: { flex: 1, backgroundColor: Playbook.canvas },
   content: {
     width: "100%",
     maxWidth: 760,
@@ -99,19 +101,11 @@ const styles = StyleSheet.create({
     padding: 20,
     paddingBottom: 60,
   },
-  eyebrow: {
-    color: "#777777",
-    fontSize: 10,
-    fontWeight: "900",
-    letterSpacing: 1.5,
-  },
-  title: { color: "#111111", fontSize: 32, fontWeight: "900", marginTop: 8 },
-  lead: { color: "#555555", fontSize: 14, lineHeight: 22, marginTop: 8 },
   list: { gap: 12, marginTop: 24 },
   card: {
     borderWidth: 1,
-    borderColor: "#dddddd",
-    borderRadius: 15,
+    borderColor: Playbook.line,
+    backgroundColor: Playbook.paper,
     padding: 16,
     gap: 7,
   },
@@ -121,8 +115,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 12,
   },
-  cardTitle: { flex: 1, color: "#111111", fontSize: 17, fontWeight: "900" },
-  status: { color: "#333333", fontSize: 11, fontWeight: "800" },
-  meta: { color: "#666666", fontSize: 12 },
-  link: { color: "#111111", fontSize: 12, fontWeight: "900", marginTop: 3 },
+  cardTitle: { flex: 1, color: Playbook.ink, fontFamily: Fonts.display, fontSize: 21, fontWeight: "900" },
+  status: { color: Playbook.green, fontFamily: Fonts.mono, fontSize: 10, fontWeight: "800" },
+  meta: { color: Playbook.muted, fontFamily: Fonts.mono, fontSize: 11 },
+  link: { color: Playbook.orange, fontSize: 12, fontWeight: "900", marginTop: 3 },
 });

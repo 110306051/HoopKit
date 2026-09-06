@@ -28,28 +28,41 @@ export interface MuxWebhookEvent {
 export class MuxService {
   constructor(private readonly config: ConfigService) {}
 
-  async createDirectUpload(mediaAssetId: string): Promise<MuxUpload> {
+  async createDirectUpload(
+    mediaAssetId: string,
+    requestedCorsOrigin?: string,
+  ): Promise<MuxUpload> {
     const tokenId = this.requireConfig('MUX_TOKEN_ID');
     const tokenSecret = this.requireConfig('MUX_TOKEN_SECRET');
     const corsOrigin =
-      this.config.get<string>('MUX_CORS_ORIGIN') ?? 'http://localhost:3000';
+      requestedCorsOrigin ??
+      this.config.get<string>('MUX_CORS_ORIGIN') ??
+      'http://localhost:3000';
 
-    const response = await fetch('https://api.mux.com/video/v1/uploads', {
-      method: 'POST',
-      headers: {
-        Authorization: `Basic ${Buffer.from(`${tokenId}:${tokenSecret}`).toString('base64')}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        cors_origin: corsOrigin,
-        timeout: 3600,
-        new_asset_settings: {
-          passthrough: mediaAssetId,
-          playback_policies: ['public'],
-          video_quality: 'basic',
+    let response: Response;
+    try {
+      response = await fetch('https://api.mux.com/video/v1/uploads', {
+        method: 'POST',
+        headers: {
+          Authorization: `Basic ${Buffer.from(`${tokenId}:${tokenSecret}`).toString('base64')}`,
+          'Content-Type': 'application/json',
         },
-      }),
-    });
+        body: JSON.stringify({
+          cors_origin: corsOrigin,
+          timeout: 3600,
+          new_asset_settings: {
+            passthrough: mediaAssetId,
+            playback_policies: ['public'],
+            video_quality: 'basic',
+          },
+        }),
+      });
+    } catch (error) {
+      const reason = error instanceof Error ? error.message : '未知網路錯誤';
+      throw new ServiceUnavailableException(
+        `無法連線到 Mux API，請確認後端網路與防火牆設定：${reason}`,
+      );
+    }
 
     const body = (await response.json().catch(() => null)) as {
       data?: MuxUpload;
@@ -62,6 +75,37 @@ export class MuxService {
     }
 
     return body.data;
+  }
+
+  async deleteAsset(assetId: string) {
+    return this.deleteMuxResource(`/video/v1/assets/${assetId}`);
+  }
+
+  async cancelUpload(uploadId: string) {
+    const tokenId = this.requireConfig('MUX_TOKEN_ID');
+    const tokenSecret = this.requireConfig('MUX_TOKEN_SECRET');
+    let response: Response;
+    try {
+      response = await fetch(
+        `https://api.mux.com/video/v1/uploads/${uploadId}/cancel`,
+        {
+          method: 'PUT',
+          headers: {
+            Authorization: `Basic ${Buffer.from(`${tokenId}:${tokenSecret}`).toString('base64')}`,
+          },
+        },
+      );
+    } catch (error) {
+      const reason = error instanceof Error ? error.message : '未知網路錯誤';
+      throw new ServiceUnavailableException(
+        `無法連線到 Mux API，請確認後端網路與防火牆設定：${reason}`,
+      );
+    }
+    if (!response.ok && response.status !== 404) {
+      throw new ServiceUnavailableException(
+        `Mux 取消上傳失敗：${response.statusText}`,
+      );
+    }
   }
 
   verifyWebhook(rawBody: Buffer, signatureHeader?: string): MuxWebhookEvent {
@@ -117,5 +161,21 @@ export class MuxService {
       );
     }
     return value;
+  }
+
+  private async deleteMuxResource(path: string) {
+    const tokenId = this.requireConfig('MUX_TOKEN_ID');
+    const tokenSecret = this.requireConfig('MUX_TOKEN_SECRET');
+    const response = await fetch(`https://api.mux.com${path}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Basic ${Buffer.from(`${tokenId}:${tokenSecret}`).toString('base64')}`,
+      },
+    });
+    if (!response.ok && response.status !== 404) {
+      throw new ServiceUnavailableException(
+        `Mux 刪除影片失敗：${response.statusText}`,
+      );
+    }
   }
 }

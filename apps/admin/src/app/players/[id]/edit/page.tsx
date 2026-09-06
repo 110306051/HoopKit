@@ -24,10 +24,10 @@ export default async function EditPlayerPage({
 
   return (
     <StudioShell email={session.email}>
-      <main className="mx-auto max-w-6xl px-5 py-8 lg:px-10 lg:py-12">
-        <p className="text-xs font-bold tracking-[0.2em] text-[#758650]">EDIT PLAYER</p>
-        <h1 className="mt-3 text-4xl font-extrabold tracking-[-0.04em]">編輯球員</h1>
-        <p className="mb-9 mt-3 text-sm leading-7 text-[#697067]">
+      <main className="studio-page max-w-6xl">
+        <p className="court-index page-kicker pt-7">PLAYERS / EDIT</p>
+        <h1 className="page-title">編輯球員</h1>
+        <p className="mb-9 mt-4 text-sm leading-7 text-[#696964]">
           修改會直接寫入 PostgreSQL；切換為發布後，公開讀取政策才會允許 Mobile 顯示。
         </p>
         {result.ok ? (

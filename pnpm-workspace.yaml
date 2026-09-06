@@ -2,9 +2,19 @@ packages:
   - "apps/*"
   - "packages/*"
 
+overrides:
+  "brace-expansion@>=4.0.0 <5.0.9": "5.0.9"
+  "browserslist@<=4.28.6": "4.28.7"
+  "fast-uri@>=3.0.0 <3.1.6": "3.1.6"
+  "js-yaml@>=4.0.0 <4.3.1": "4.3.1"
+  "nanoid@<3.3.18": "3.3.18"
+  "postcss@<=8.5.22": "8.5.23"
+  "sharp@<0.35.0": "0.35.0"
+
 allowBuilds:
   "@nestjs/core": true
   "@parcel/watcher": true
+  "@sentry/cli": true
   "@swc/core": true
   esbuild: true
   sharp: true

@@ -27,7 +27,7 @@ export function ContentLibraryView({ data }: { data: ContentLibrary }) {
           action={
             <Link
               href="/players/new"
-              className="rounded-full bg-[#111711] px-4 py-2 text-sm font-bold text-white hover:bg-[#283027]"
+              className="primary-action"
             >
               ＋ 新增球員
             </Link>
@@ -39,7 +39,7 @@ export function ContentLibraryView({ data }: { data: ContentLibrary }) {
             {data.players.map((player) => (
               <article
                 key={player.id}
-                className="overflow-hidden rounded-2xl border border-[#d8d6cd] bg-[#fbfaf6]"
+                className="overflow-hidden border border-[#d7d7d0] bg-white"
               >
                 <div className="flex items-center gap-4 p-5">
                   {player.avatarPath ? (
@@ -49,7 +49,7 @@ export function ContentLibraryView({ data }: { data: ContentLibrary }) {
                       className="size-16 rounded-2xl object-cover"
                     />
                   ) : (
-                    <span className="court-grid grid size-16 shrink-0 place-items-center rounded-2xl bg-[#111711] font-[var(--font-manrope)] text-xl font-black text-[#bff54a]">
+                    <span className="display-type grid size-16 shrink-0 place-items-center rounded-md bg-[#121212] text-xl font-black text-[#f05a28]">
                       {player.fullName.slice(0, 2).toUpperCase()}
                     </span>
                   )}
@@ -69,7 +69,7 @@ export function ContentLibraryView({ data }: { data: ContentLibrary }) {
                 </p>
                 <Link
                   href={`/players/${player.id}/edit`}
-                  className="block border-t border-[#e5e2da] px-5 py-3 text-sm font-bold text-[#4f681a] hover:bg-[#f3f8e7]"
+                  className="block border-t border-[#d7d7d0] px-5 py-3 text-sm font-bold text-[#c94b22] hover:bg-[#fff0e9]"
                 >
                   編輯球員 →
                 </Link>
@@ -88,7 +88,7 @@ export function ContentLibraryView({ data }: { data: ContentLibrary }) {
             {data.moves.map((move) => (
               <details
                 key={move.id}
-                className="group overflow-hidden rounded-2xl border border-[#d8d6cd] bg-[#fbfaf6]"
+                className="group overflow-hidden border border-[#d7d7d0] bg-white"
               >
                 <summary className="flex cursor-pointer list-none items-center gap-5 p-5 marker:hidden">
                   <div className="hidden w-44 shrink-0 sm:block">
@@ -130,7 +130,7 @@ export function ContentLibraryView({ data }: { data: ContentLibrary }) {
                           move.tags.map((tag) => (
                             <span
                               key={tag}
-                              className="rounded-full border border-[#d8d6cd] bg-white px-3 py-1 text-xs font-semibold"
+                              className="rounded-md border border-[#d7d7d0] bg-white px-3 py-1 text-xs font-semibold"
                             >
                               #{tag}
                             </span>
@@ -152,7 +152,7 @@ export function ContentLibraryView({ data }: { data: ContentLibrary }) {
                           key={step.id}
                           className="grid grid-cols-[36px_1fr] gap-3 rounded-xl border border-[#e0ded6] bg-white p-4"
                         >
-                          <span className="grid size-9 place-items-center rounded-full bg-[#bff54a] font-[var(--font-manrope)] text-sm font-black">
+                          <span className="utility-type grid size-9 place-items-center rounded-md bg-[#121212] text-sm font-black text-white">
                             {index + 1}
                           </span>
                           <div>
@@ -202,7 +202,7 @@ export function ContentLibraryView({ data }: { data: ContentLibrary }) {
           {data.workoutTemplates.map((template) => (
             <article
               key={template.id}
-              className="overflow-hidden rounded-2xl border border-[#d8d6cd] bg-[#fbfaf6]"
+              className="overflow-hidden border border-[#d7d7d0] bg-white"
             >
               <div className="p-6">
                 <div className="flex flex-wrap items-center gap-2">
@@ -238,7 +238,7 @@ export function ContentLibraryView({ data }: { data: ContentLibrary }) {
                   {template.sections.map((section, sectionIndex) => (
                     <div key={section.id}>
                       <div className="flex items-center gap-3">
-                        <span className="grid size-7 place-items-center rounded-full bg-[#111711] text-xs font-black text-[#bff54a]">
+                        <span className="utility-type grid size-7 place-items-center rounded-md bg-[#121212] text-xs font-black text-[#f05a28]">
                           {sectionIndex + 1}
                         </span>
                         <div>
@@ -308,8 +308,8 @@ function SectionHeader({
   return (
     <div className="mb-5 flex items-end justify-between gap-4">
       <div>
-        <p className="text-[10px] font-bold tracking-[0.2em] text-[#758650]">{eyebrow}</p>
-        <h2 className="mt-1 text-2xl font-extrabold">
+        <p className="page-kicker">{eyebrow}</p>
+        <h2 className="display-type mt-1 text-3xl font-black">
           {title} <span className="text-base font-semibold text-[#949a92]">{count}</span>
         </h2>
       </div>
@@ -352,7 +352,7 @@ function ListBlock({ label, items }: { label: string; items: string[] }) {
 function EmptyState({ text, compact = false }: { text: string; compact?: boolean }) {
   return (
     <div
-      className={`rounded-2xl border border-dashed border-[#c9c7be] bg-[#eeece5] text-center text-sm text-[#747c72] ${
+      className={`border border-dashed border-[#a8a8a0] bg-white text-center text-sm text-[#696964] ${
         compact ? "mt-3 p-5" : "p-10"
       }`}
     >

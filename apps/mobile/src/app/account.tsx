@@ -11,9 +11,16 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ErrorState, LoadingState } from "@/components/content-state";
+import { ConfirmDialog } from "@/components/confirm-dialog";
+import { CourtIndex } from "@/components/playbook-ui";
+import { Fonts, Playbook } from "@/constants/theme";
 import { useApiResource } from "@/hooks/use-api-resource";
 import { useRefreshOnFocus } from "@/hooks/use-refresh-on-focus";
-import { createPersonalPlan, getMemberOverview } from "@/lib/member-api";
+import {
+  createPersonalPlan,
+  deleteAccount,
+  getMemberOverview,
+} from "@/lib/member-api";
 import { useSession } from "@/providers/session-provider";
 
 export default function AccountScreen() {
@@ -61,13 +68,11 @@ function AuthForm() {
         contentContainerStyle={styles.authContent}
         keyboardShouldPersistTaps="handled"
       >
-        <Text style={styles.eyebrow}>YOUR TRAINING, YOUR ORDER</Text>
-        <Text style={styles.authTitle}>
-          {mode === "login" ? "登入 HoopKit" : "建立訓練帳號"}
-        </Text>
-        <Text style={styles.lead}>
-          登入後可以收藏招式、複製公開菜單，並建立自己的訓練順序。
-        </Text>
+        <CourtIndex
+          eyebrow="YOUR TRAINING / YOUR ORDER"
+          title={mode === "login" ? "登入 HoopKit" : "建立訓練帳號"}
+          description="登入後可以收藏招式、複製公開菜單，並建立自己的訓練順序。"
+        />
         <View style={styles.form}>
           {mode === "register" ? (
             <Field
@@ -96,7 +101,7 @@ function AuthForm() {
             style={styles.primaryButton}
           >
             {busy ? (
-              <ActivityIndicator color="#ffffff" />
+              <ActivityIndicator color={Playbook.paper} />
             ) : (
               <Text style={styles.primaryButtonText}>
                 {mode === "login" ? "登入" : "註冊"}
@@ -116,6 +121,7 @@ function AuthForm() {
                 : "已經有帳號？返回登入"}
             </Text>
           </Pressable>
+          <LegalLinks />
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -131,7 +137,7 @@ function Field(
       <Text style={styles.label}>{label}</Text>
       <TextInput
         {...inputProps}
-        placeholderTextColor="#888888"
+        placeholderTextColor={Playbook.mutedLight}
         style={styles.input}
       />
     </View>
@@ -143,6 +149,9 @@ function MemberHome({ accessToken }: { accessToken: string }) {
   const [newPlanName, setNewPlanName] = useState("");
   const [creatingPlan, setCreatingPlan] = useState(false);
   const [createError, setCreateError] = useState<string | null>(null);
+  const [deleteVisible, setDeleteVisible] = useState(false);
+  const [deleteBusy, setDeleteBusy] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
   const loader = useCallback(
     (signal: AbortSignal) => getMemberOverview(accessToken, signal),
     [accessToken],
@@ -167,6 +176,21 @@ function MemberHome({ accessToken }: { accessToken: string }) {
       setCreateError(error instanceof Error ? error.message : "建立菜單失敗。");
     } finally {
       setCreatingPlan(false);
+    }
+  }
+
+  async function confirmDeleteAccount() {
+    setDeleteBusy(true);
+    setDeleteError(null);
+    try {
+      await deleteAccount(accessToken);
+      await logout();
+      setDeleteVisible(false);
+      router.replace("/" as Href);
+    } catch (cause) {
+      setDeleteError(cause instanceof Error ? cause.message : "刪除帳號失敗。");
+    } finally {
+      setDeleteBusy(false);
     }
   }
 
@@ -198,6 +222,19 @@ function MemberHome({ accessToken }: { accessToken: string }) {
         >
           <Text style={styles.outlineButtonText}>查看訓練紀錄與繼續訓練 →</Text>
         </Pressable>
+        <Pressable
+          onPress={() => router.push("/my-clips" as Href)}
+          style={styles.clipLibraryButton}
+        >
+          <View style={styles.clipLibraryCopy}>
+            <Text style={styles.clipLibraryEyebrow}>PERSONAL FILM</Text>
+            <Text style={styles.clipLibraryTitle}>上傳與整理我的片段</Text>
+            <Text style={styles.clipLibraryBody}>
+              選擇本機影片，標記 HoopKit 球員與自訂技術標籤。
+            </Text>
+          </View>
+          <Text style={styles.clipLibraryArrow}>→</Text>
+        </Pressable>
         <MemberSection
           title="我的訓練菜單"
           description="從公開菜單建立副本後，就屬於你自己的內容。"
@@ -224,7 +261,7 @@ function MemberHome({ accessToken }: { accessToken: string }) {
               value={newPlanName}
               onChangeText={setNewPlanName}
               placeholder="例如：週末控球訓練"
-              placeholderTextColor="#888888"
+              placeholderTextColor={Playbook.mutedLight}
               style={[styles.input, styles.createPlanInput]}
             />
             <Pressable
@@ -281,14 +318,54 @@ function MemberHome({ accessToken }: { accessToken: string }) {
           )}
         </MemberSection>
         <View style={styles.submissionNote}>
-          <Text style={styles.listTitle}>使用者投稿</Text>
+          <Text style={styles.listTitle}>官方內容與個人片段分開保存</Text>
           <Text style={styles.listBody}>
-            投稿會採用「私人草稿 → 媒體掃描/轉碼 → Admin 審核 →
-            發布」流程，不會直接混入官方招式庫。
+            你可以標記 Admin 提供的球員，但不會改動官方球員或招式資料。
           </Text>
         </View>
+        <View style={styles.accountSafety}>
+          <Text style={styles.sectionTitle}>帳號與資料</Text>
+          <LegalLinks />
+          <Pressable
+            accessibilityRole="button"
+            onPress={() => {
+              setDeleteError(null);
+              setDeleteVisible(true);
+            }}
+            style={styles.deleteAccountButton}
+          >
+            <Text style={styles.deleteAccountText}>永久刪除帳號與個人資料</Text>
+          </Pressable>
+        </View>
       </ScrollView>
+      <ConfirmDialog
+        visible={deleteVisible}
+        title="永久刪除 HoopKit 帳號？"
+        description="這會刪除登入帳號、收藏、個人菜單、訓練紀錄，以及由 HoopKit 管理的個人 Mux 影片。操作無法復原。"
+        confirmLabel="永久刪除"
+        busy={deleteBusy}
+        error={deleteError}
+        onCancel={() => {
+          if (!deleteBusy) setDeleteVisible(false);
+          setDeleteError(null);
+        }}
+        onConfirm={() => void confirmDeleteAccount()}
+      />
     </SafeAreaView>
+  );
+}
+
+function LegalLinks() {
+  return (
+    <View style={styles.legalLinks}>
+      <Pressable onPress={() => router.push("/legal/privacy" as Href)}>
+        <Text style={styles.legalLink}>隱私權政策</Text>
+      </Pressable>
+      <Text style={styles.legalDivider}>·</Text>
+      <Pressable onPress={() => router.push("/legal/terms" as Href)}>
+        <Text style={styles.legalLink}>服務條款</Text>
+      </Pressable>
+    </View>
   );
 }
 
@@ -330,7 +407,7 @@ function EmptyCard({ text }: { text: string }) {
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: "#ffffff" },
+  screen: { flex: 1, backgroundColor: Playbook.canvas },
   authContent: {
     width: "100%",
     maxWidth: 560,
@@ -339,43 +416,45 @@ const styles = StyleSheet.create({
     paddingTop: 50,
   },
   eyebrow: {
-    color: "#666666",
+    color: Playbook.orange,
+    fontFamily: Fonts.mono,
     fontSize: 10,
     fontWeight: "900",
     letterSpacing: 1.6,
   },
   authTitle: {
-    color: "#111111",
+    color: Playbook.ink,
+    fontFamily: Fonts.display,
     fontSize: 34,
     fontWeight: "900",
     marginTop: 10,
   },
-  lead: { color: "#555555", fontSize: 15, lineHeight: 23, marginTop: 10 },
+  lead: { color: Playbook.muted, fontSize: 15, lineHeight: 23, marginTop: 10 },
   form: { marginTop: 30, gap: 18 },
   field: { gap: 8 },
-  label: { color: "#222222", fontSize: 13, fontWeight: "800" },
+  label: { color: Playbook.inkSoft, fontSize: 13, fontWeight: "800" },
   input: {
     borderWidth: 1,
-    borderColor: "#cccccc",
-    borderRadius: 12,
-    backgroundColor: "#ffffff",
-    color: "#111111",
+    borderColor: Playbook.line,
+    borderRadius: 8,
+    backgroundColor: Playbook.paper,
+    color: Playbook.ink,
     fontSize: 16,
     paddingHorizontal: 14,
     paddingVertical: 13,
   },
-  message: { color: "#9b1c1c", fontSize: 13, lineHeight: 20 },
+  message: { color: Playbook.danger, fontSize: 13, lineHeight: 20 },
   primaryButton: {
     minHeight: 50,
     alignItems: "center",
     justifyContent: "center",
-    borderRadius: 12,
-    backgroundColor: "#111111",
+    borderRadius: 8,
+    backgroundColor: Playbook.ink,
     paddingHorizontal: 18,
   },
-  primaryButtonText: { color: "#ffffff", fontWeight: "900", fontSize: 15 },
+  primaryButtonText: { color: Playbook.paper, fontWeight: "900", fontSize: 15 },
   textButton: { alignItems: "center", padding: 10 },
-  textButtonLabel: { color: "#333333", fontWeight: "700" },
+  textButtonLabel: { color: Playbook.inkSoft, fontWeight: "700" },
   memberContent: {
     width: "100%",
     maxWidth: 760,
@@ -391,25 +470,30 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
   },
   memberTitle: {
-    color: "#111111",
+    color: Playbook.ink,
+    fontFamily: Fonts.display,
     fontSize: 31,
     fontWeight: "900",
     marginTop: 6,
   },
-  email: { color: "#777777", fontSize: 13, marginTop: 4 },
+  email: {
+    color: Playbook.muted,
+    fontFamily: Fonts.mono,
+    fontSize: 12,
+    marginTop: 4,
+  },
   outlineButton: {
     borderWidth: 1,
-    borderColor: "#bbbbbb",
-    borderRadius: 10,
+    borderColor: Playbook.lineStrong,
+    borderRadius: 7,
     paddingHorizontal: 14,
     paddingVertical: 10,
   },
-  outlineButtonText: { color: "#222222", fontWeight: "800" },
+  outlineButtonText: { color: Playbook.inkSoft, fontWeight: "800" },
   stats: {
     flexDirection: "row",
     borderWidth: 1,
-    borderColor: "#dddddd",
-    borderRadius: 16,
+    borderColor: Playbook.line,
     overflow: "hidden",
     marginTop: 16,
   },
@@ -418,14 +502,28 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: 18,
     borderRightWidth: 1,
-    borderRightColor: "#e5e5e5",
+    borderRightColor: Playbook.line,
+    backgroundColor: Playbook.paper,
   },
-  statValue: { color: "#111111", fontSize: 22, fontWeight: "900" },
-  statLabel: { color: "#777777", fontSize: 11, marginTop: 4 },
+  statValue: {
+    color: Playbook.ink,
+    fontFamily: Fonts.display,
+    fontSize: 26,
+    fontWeight: "900",
+  },
+  statLabel: { color: Playbook.muted, fontSize: 11, marginTop: 4 },
   section: { marginTop: 34 },
-  sectionTitle: { color: "#111111", fontSize: 22, fontWeight: "900" },
+  sectionTitle: {
+    color: Playbook.ink,
+    fontFamily: Fonts.display,
+    fontSize: 27,
+    fontWeight: "900",
+    borderTopWidth: 1,
+    borderTopColor: Playbook.ink,
+    paddingTop: 12,
+  },
   sectionDescription: {
-    color: "#666666",
+    color: Playbook.muted,
     fontSize: 13,
     lineHeight: 20,
     marginTop: 5,
@@ -433,53 +531,114 @@ const styles = StyleSheet.create({
   sectionStack: { gap: 10, marginTop: 14 },
   listCard: {
     borderWidth: 1,
-    borderColor: "#dddddd",
-    borderRadius: 14,
-    backgroundColor: "#ffffff",
+    borderColor: Playbook.line,
+    backgroundColor: Playbook.paper,
     padding: 16,
     gap: 6,
   },
-  listTitle: { color: "#111111", fontSize: 16, fontWeight: "800" },
-  listBody: { color: "#666666", fontSize: 13, lineHeight: 20 },
-  comingSoon: { color: "#888888", fontSize: 11, marginTop: 4 },
+  listTitle: { color: Playbook.ink, fontSize: 16, fontWeight: "800" },
+  listBody: { color: Playbook.muted, fontSize: 13, lineHeight: 20 },
+  comingSoon: {
+    color: Playbook.orange,
+    fontSize: 11,
+    fontWeight: "800",
+    marginTop: 4,
+  },
   createPlanRow: { flexDirection: "row", alignItems: "center", gap: 8 },
   createPlanInput: { flex: 1 },
   compactButton: {
     minHeight: 48,
     justifyContent: "center",
-    borderRadius: 12,
-    backgroundColor: "#111111",
+    borderRadius: 8,
+    backgroundColor: Playbook.ink,
     paddingHorizontal: 18,
   },
   emptyCard: {
     borderWidth: 1,
     borderStyle: "dashed",
-    borderColor: "#cccccc",
-    borderRadius: 14,
-    color: "#777777",
+    borderColor: Playbook.lineStrong,
+    color: Playbook.muted,
     padding: 18,
     lineHeight: 20,
   },
   outlineWide: {
     alignItems: "center",
     borderWidth: 1,
-    borderColor: "#222222",
-    borderRadius: 12,
+    borderColor: Playbook.ink,
+    borderRadius: 8,
     padding: 13,
   },
   historyButton: {
     alignItems: "center",
     borderWidth: 1,
-    borderColor: "#222222",
-    borderRadius: 12,
+    borderColor: Playbook.ink,
+    borderRadius: 8,
     padding: 13,
     marginTop: 12,
   },
+  clipLibraryButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 16,
+    marginTop: 12,
+    borderWidth: 1,
+    borderColor: "#27282D",
+    backgroundColor: Playbook.film,
+    padding: 18,
+  },
+  clipLibraryCopy: { flex: 1, gap: 5 },
+  clipLibraryEyebrow: {
+    color: Playbook.orange,
+    fontFamily: Fonts.mono,
+    fontSize: 9,
+    fontWeight: "900",
+    letterSpacing: 1.3,
+  },
+  clipLibraryTitle: {
+    color: Playbook.paper,
+    fontFamily: Fonts.display,
+    fontSize: 22,
+    fontWeight: "900",
+  },
+  clipLibraryBody: { color: "#FFFFFF80", fontSize: 12, lineHeight: 18 },
+  clipLibraryArrow: {
+    color: Playbook.orange,
+    fontFamily: Fonts.display,
+    fontSize: 28,
+    fontWeight: "900",
+  },
   submissionNote: {
     marginTop: 34,
-    borderRadius: 16,
-    backgroundColor: "#f3f3f3",
+    borderLeftWidth: 3,
+    borderLeftColor: Playbook.orange,
+    backgroundColor: Playbook.orangeSoft,
     padding: 18,
     gap: 7,
+  },
+  accountSafety: { marginTop: 34, gap: 14 },
+  legalLinks: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+    alignItems: "center",
+  },
+  legalLink: {
+    color: Playbook.inkSoft,
+    fontSize: 12,
+    fontWeight: "800",
+    textDecorationLine: "underline",
+  },
+  legalDivider: { color: Playbook.mutedLight },
+  deleteAccountButton: {
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: Playbook.danger,
+    borderRadius: 8,
+    padding: 13,
+  },
+  deleteAccountText: {
+    color: Playbook.danger,
+    fontSize: 13,
+    fontWeight: "900",
   },
 });
