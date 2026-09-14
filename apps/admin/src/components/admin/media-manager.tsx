@@ -37,6 +37,8 @@ export function MediaManager({
   const [imageUpload, setImageUpload] = useState(idleUpload);
   const [videoUpload, setVideoUpload] = useState(idleUpload);
   const [refreshing, setRefreshing] = useState(false);
+  const [deletingAssetId, setDeletingAssetId] = useState<string | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
   const imageInput = useRef<HTMLInputElement>(null);
   const videoInput = useRef<HTMLInputElement>(null);
   const hasPending = useMemo(
@@ -50,6 +52,39 @@ export function MediaManager({
       setAssets(await adminClientApiRequest<MediaAsset[]>("/admin/media"));
     } finally {
       if (!silent) setRefreshing(false);
+    }
+  }
+
+  async function deleteMedia(asset: MediaAsset) {
+    const location =
+      asset.provider === "mux"
+        ? "Mux 影片"
+        : asset.provider === "supabase"
+          ? "Supabase Storage 圖片"
+          : "媒體紀錄";
+    if (
+      !window.confirm(
+        `確定永久刪除「${asset.title}」？這會刪除 ${location} 與資料庫紀錄，無法復原。`,
+      )
+    )
+      return;
+    setDeletingAssetId(asset.id);
+    setDeleteError(null);
+    try {
+      const result = await adminClientApiRequest<{
+        deleted: boolean;
+        muxAssetNotFound: boolean;
+      }>(`/admin/media/${asset.id}`, { method: "DELETE" });
+      setAssets((current) => current.filter((item) => item.id !== asset.id));
+      if (result.muxAssetNotFound) {
+        setDeleteError(
+          "資料庫紀錄已刪除，但目前 Mux 帳號找不到該影片；若影片屬於舊帳號，仍須到舊帳號另外刪除。",
+        );
+      }
+    } catch (error) {
+      setDeleteError(errorMessage(error));
+    } finally {
+      setDeletingAssetId(null);
     }
   }
 
@@ -160,14 +195,35 @@ export function MediaManager({
       <section className="grid overflow-hidden border border-[#27282d] bg-[#101114] xl:grid-cols-[.72fr_1fr_1fr]">
         <aside className="court-grid relative flex min-h-64 flex-col justify-between border-b border-white/10 p-6 text-white xl:border-b-0 xl:border-r">
           <div>
-            <p className="utility-type text-[10px] font-bold tracking-[0.16em] text-[#ff7447]">INGEST STATION</p>
-            <h2 className="display-type mt-4 text-4xl font-black leading-none">素材進站</h2>
-            <p className="mt-4 text-sm leading-6 text-white/55">選擇原始檔案，系統會建立資產紀錄並交給對應的雲端服務處理。</p>
+            <p className="utility-type text-[10px] font-bold tracking-[0.16em] text-[#ff7447]">
+              INGEST STATION
+            </p>
+            <h2 className="display-type mt-4 text-4xl font-black leading-none">
+              素材進站
+            </h2>
+            <p className="mt-4 text-sm leading-6 text-white/55">
+              選擇原始檔案，系統會建立資產紀錄並交給對應的雲端服務處理。
+            </p>
           </div>
           <dl className="mt-8 grid grid-cols-3 gap-3 border-t border-white/15 pt-5">
-            <div><dt className="utility-type text-[9px] text-white/40">ALL</dt><dd className="display-type mt-1 text-3xl font-black">{assets.length}</dd></div>
-            <div><dt className="utility-type text-[9px] text-white/40">READY</dt><dd className="display-type mt-1 text-3xl font-black text-[#72c58e]">{readyCount}</dd></div>
-            <div><dt className="utility-type text-[9px] text-white/40">VIDEO</dt><dd className="display-type mt-1 text-3xl font-black text-[#7190ff]">{videoCount}</dd></div>
+            <div>
+              <dt className="utility-type text-[9px] text-white/40">ALL</dt>
+              <dd className="display-type mt-1 text-3xl font-black">
+                {assets.length}
+              </dd>
+            </div>
+            <div>
+              <dt className="utility-type text-[9px] text-white/40">READY</dt>
+              <dd className="display-type mt-1 text-3xl font-black text-[#72c58e]">
+                {readyCount}
+              </dd>
+            </div>
+            <div>
+              <dt className="utility-type text-[9px] text-white/40">VIDEO</dt>
+              <dd className="display-type mt-1 text-3xl font-black text-[#7190ff]">
+                {videoCount}
+              </dd>
+            </div>
           </dl>
         </aside>
         <UploadCard
@@ -243,6 +299,9 @@ export function MediaManager({
         assets={assets}
         refreshing={refreshing}
         onRefresh={() => void refreshMedia()}
+        onDelete={(asset) => void deleteMedia(asset)}
+        deletingAssetId={deletingAssetId}
+        deleteError={deleteError}
       />
     </div>
   );
@@ -252,10 +311,16 @@ function MediaLibrary({
   assets,
   refreshing,
   onRefresh,
+  onDelete,
+  deletingAssetId,
+  deleteError,
 }: {
   assets: MediaAsset[];
   refreshing: boolean;
   onRefresh: () => void;
+  onDelete: (asset: MediaAsset) => void;
+  deletingAssetId: string | null;
+  deleteError: string | null;
 }) {
   return (
     <section>
@@ -274,6 +339,15 @@ function MediaLibrary({
           {refreshing ? "更新中…" : "重新整理"}
         </button>
       </div>
+
+      {deleteError ? (
+        <p
+          role="alert"
+          className="mt-4 rounded-lg bg-[#fff0eb] p-3 text-sm font-semibold text-[#a33d1d]"
+        >
+          {deleteError}
+        </p>
+      ) : null}
 
       {assets.length ? (
         <div className="mt-5 grid gap-px border border-[#d7d7d0] bg-[#d7d7d0] md:grid-cols-2 2xl:grid-cols-3">
@@ -319,6 +393,15 @@ function MediaLibrary({
                   {asset.errorMessage}
                 </p>
               ) : null}
+              <button
+                type="button"
+                className="mt-4 rounded-md border border-[#c9c7be] px-3 py-2 text-xs font-bold text-[#9f3c1a] hover:border-[#9f3c1a] disabled:opacity-50"
+                onClick={() => onDelete(asset)}
+                disabled={deletingAssetId !== null}
+                aria-label={`刪除媒體 ${asset.title}`}
+              >
+                {deletingAssetId === asset.id ? "刪除中…" : "刪除媒體"}
+              </button>
             </article>
           ))}
         </div>
@@ -358,8 +441,18 @@ function UploadCard({
             <span>UPLOAD PROGRESS</span>
             <span>{state.progress}%</span>
           </div>
-          <div className="h-1 overflow-hidden bg-white/10" role="progressbar" aria-label={`${title}進度`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={state.progress}>
-            <div className="h-full bg-[#315efb] transition-[width]" style={{ width: `${state.progress}%` }} />
+          <div
+            className="h-1 overflow-hidden bg-white/10"
+            role="progressbar"
+            aria-label={`${title}進度`}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuenow={state.progress}
+          >
+            <div
+              className="h-full bg-[#315efb] transition-[width]"
+              style={{ width: `${state.progress}%` }}
+            />
           </div>
         </div>
       ) : null}

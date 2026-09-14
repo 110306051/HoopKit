@@ -10,6 +10,7 @@ export interface MuxUpload {
   id: string;
   url: string;
   status: string;
+  asset_id?: string | null;
 }
 
 export interface MuxWebhookEvent {
@@ -79,6 +80,36 @@ export class MuxService {
 
   async deleteAsset(assetId: string) {
     return this.deleteMuxResource(`/video/v1/assets/${assetId}`);
+  }
+
+  async getUpload(uploadId: string): Promise<MuxUpload | null> {
+    const tokenId = this.requireConfig('MUX_TOKEN_ID');
+    const tokenSecret = this.requireConfig('MUX_TOKEN_SECRET');
+    let response: Response;
+    try {
+      response = await fetch(
+        `https://api.mux.com/video/v1/uploads/${uploadId}`,
+        {
+          headers: {
+            Authorization: `Basic ${Buffer.from(`${tokenId}:${tokenSecret}`).toString('base64')}`,
+          },
+        },
+      );
+    } catch (error) {
+      const reason = error instanceof Error ? error.message : '未知網路錯誤';
+      throw new ServiceUnavailableException(`無法查詢 Mux upload：${reason}`);
+    }
+    if (response.status === 404) return null;
+    if (!response.ok) {
+      throw new ServiceUnavailableException(
+        `Mux 查詢 upload 失敗：${response.statusText}`,
+      );
+    }
+    const body = (await response.json()) as { data?: MuxUpload };
+    if (!body.data) {
+      throw new ServiceUnavailableException('Mux 查詢 upload 沒有回傳資料。');
+    }
+    return body.data;
   }
 
   async cancelUpload(uploadId: string) {
@@ -177,5 +208,6 @@ export class MuxService {
         `Mux 刪除影片失敗：${response.statusText}`,
       );
     }
+    return response.status !== 404;
   }
 }

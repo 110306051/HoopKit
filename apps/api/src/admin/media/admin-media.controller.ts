@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseUUIDPipe,
@@ -28,6 +29,11 @@ export class AdminMediaController {
   @Get()
   listMedia() {
     return this.mediaService.listMedia();
+  }
+
+  @Delete(':id')
+  deleteMedia(@Param('id', new ParseUUIDPipe()) id: string) {
+    return this.mediaService.deleteMedia(id);
   }
 
   @Post('images/upload-url')

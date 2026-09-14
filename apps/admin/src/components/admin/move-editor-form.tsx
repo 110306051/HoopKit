@@ -130,6 +130,11 @@ export function MoveEditorForm({
                 </option>
               ))}
             </select>
+            {options.categories.length === 0 ? (
+              <p role="alert" className="mt-2 text-sm text-[#9f3c1a]">
+                尚無分類。正式資料庫需先套用預設分類 migration，才能新增招式。
+              </p>
+            ) : null}
           </Field>
           <Field label="難度" required>
             <select

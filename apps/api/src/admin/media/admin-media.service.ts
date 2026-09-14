@@ -58,6 +58,84 @@ export class AdminMediaService {
     );
   }
 
+  async deleteMedia(id: string) {
+    const asset = await this.findRawAsset(id);
+    const client = this.supabase.serviceClient;
+    let muxAssetNotFound = false;
+
+    // Do not remove a remote file while published content still refers to it.
+    const references = await Promise.all([
+      client
+        .from('highlight_clips')
+        .select('id')
+        .eq('media_asset_id', id)
+        .limit(1),
+      client.from('moves').select('id').eq('cover_asset_id', id).limit(1),
+      client
+        .from('workout_templates')
+        .select('id')
+        .eq('cover_asset_id', id)
+        .limit(1),
+      asset.source_url
+        ? client
+            .from('players')
+            .select('id')
+            .eq('avatar_path', asset.source_url)
+            .limit(1)
+        : Promise.resolve({ data: [], error: null }),
+    ]);
+    const lookupError = references.find((result) => result.error)?.error;
+    if (lookupError) {
+      throw new InternalServerErrorException(
+        `檢查媒體引用失敗：${lookupError.message}`,
+      );
+    }
+    if (references.some((result) => (result.data?.length ?? 0) > 0)) {
+      throw new BadRequestException(
+        '媒體仍被招式片段、封面或球員頭像引用，請先解除綁定再刪除。',
+      );
+    }
+
+    // External storage is deleted first. A DB failure leaves a retryable row;
+    // deleting the DB row first could leave an untracked billable Mux asset.
+    if (asset.provider === 'supabase' && asset.provider_asset_id) {
+      const { error } = await client.storage
+        .from(IMAGE_BUCKET)
+        .remove([asset.provider_asset_id]);
+      if (error) {
+        throw new InternalServerErrorException(
+          `刪除圖片檔案失敗：${error.message}`,
+        );
+      }
+    } else if (asset.provider === 'mux' && asset.provider_asset_id) {
+      const upload = await this.mux.getUpload(asset.provider_asset_id);
+      if (upload?.asset_id) {
+        muxAssetNotFound = !(await this.mux.deleteAsset(upload.asset_id));
+      } else if (upload?.status === 'waiting') {
+        await this.mux.cancelUpload(upload.id);
+      } else if (upload) {
+        if (!['cancelled', 'errored', 'timed_out'].includes(upload.status)) {
+          throw new InternalServerErrorException(
+            `Mux upload 狀態為 ${upload.status}，但沒有 asset ID，已保留資料庫紀錄以免遺留影片。`,
+          );
+        }
+      } else {
+        // After the asset-created webhook, provider_asset_id is the Mux asset ID.
+        muxAssetNotFound = !(await this.mux.deleteAsset(
+          asset.provider_asset_id,
+        ));
+      }
+    }
+
+    const { error } = await client.from('media_assets').delete().eq('id', id);
+    if (error) {
+      throw new InternalServerErrorException(
+        `刪除媒體資料失敗：${error.message}`,
+      );
+    }
+    return { deleted: true, muxAssetNotFound };
+  }
+
   async createImageUpload(input: CreateImageUploadDto, userId: string) {
     const extension = this.imageExtension(input.contentType);
     const path = `${userId}/${new Date().getUTCFullYear()}/${randomUUID()}.${extension}`;
